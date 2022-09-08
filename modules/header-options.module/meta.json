@@ -1,0 +1,20 @@
+{
+  "content_tags" : [ {
+    "name" : "NONPROFIT",
+    "source" : "MARKETPLACE"
+  }, {
+    "name" : "COMPATIBLE_BLOG",
+    "source" : "MARKETPLACE"
+  }, {
+    "name" : "COMPATIBLE_PAGE",
+    "source" : "MARKETPLACE"
+  } ],
+  "extra_classes" : "widget-type-menu",
+  "global" : false,
+  "master_language" : "en",
+  "icon" : "fontawesome-5.14.0:Tools:SOLID",
+  "host_template_types" : [ "PAGE", "BLOG_POST", "BLOG_LISTING" ],
+  "module_id" : 84342719391,
+  "label" : "Flex Header Options",
+  "is_available_for_new_content" : true
+}

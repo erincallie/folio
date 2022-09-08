@@ -1,0 +1,126 @@
+{% macro render_block(stat_block) %}
+<div class="stat-blocks__block stat-block" style="background-color:{{ stat_block.background_color.css }};">
+  <div class="stat-block__inner">
+    <div class="stat-block__number">
+      <span data-stat="{{ stat_block.number }}" id="stat--{{ loop.index }}" class="counter">{{ stat_block.number }}</span>
+      {% if stat_block.suffix %}<span>{{ stat_block.suffix }}</span>{% endif %}
+    </div>
+    <div class="stat-block__content">
+      {{ stat_block.content }}
+    </div>
+    <div class="stat-block__logo">
+      {% if stat_block.logo.src %}
+        <img src="{{ stat_block.logo.src }}" alt="{{ stat_block.logo.alt }}">
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+<div id="{{ name }}" class="stat-blocks">
+  <div class="stat-blocks__container">
+    <div class="stat-blocks__row">
+      {% for stat_block in module.stat_blocks %}
+        {{ render_block(stat_block) }}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% require_css %}
+
+<style>
+	
+	{% macro transition(value) %}-webkit-transition: {{ value }};-moz-transition: {{ value }};-o-transition: {{ value }};-ms-transition: {{ value }};transition: {{ value }};{% endmacro %}
+	{% macro borderRadius(value) %}-webkit-border-radius: {{ value }};-moz-border-radius: {{ value }};-o-border-radius: {{ value }};-ms-border-radius: {{ value }};border-radius: {{ value }};{% endmacro %}
+	{% macro boxShadow(value) %}-webkit-box-shadow: {{ value }};-moz-box-shadow: {{ value }};-o-box-shadow: {{ value }};-ms-box-shadow: {{ value }};box-shadow: {{ value }};{% endmacro %}
+	{% macro textShadow(value) %}-webkit-text-shadow: {{ value }};-moz-text-shadow: {{ value }};-o-text-shadow: {{ value }};-ms-text-shadow: {{ value }};text-shadow: {{ value }};{% endmacro %}
+	{% macro transform(value) %}-webkit-transform: {{ value }};-moz-transform: {{ value }};-o-transform: {{ value }};-ms-transform: {{ value }}; transform: {{ value }};{% endmacro %}
+	
+	{% macro flex_grid(obj, break, col_num, vert_spacing, horiz_spacing) %}
+	  {% set width =  1 / col_num * 100 %}
+	  {% set row_two = col_num + 1 %}
+	  {% set next = break + 1 %}
+	  {% set margin_adjust = horiz_spacing * ((col_num - 1) / col_num) %}
+	  @media screen and (max-width: {{ break }}px) { {{ obj }} > *:not(:last-child) { margin-bottom: {{ vert_spacing }}px; } }
+	  @media screen and (min-width: {{ next }}px) { 
+	    {{ obj }} { display: flex; flex-wrap: wrap; }
+	    {{ obj }} > * { display: inline-block; width: calc({{ width }}% - {{ margin_adjust }}px); margin-right: {{ horiz_spacing }}px !important; margin-bottom: 0; }
+	    {{ obj }} > *:nth-child({{ col_num }}n) { margin-right: 0 !important; }
+	    {{ obj }} > *:nth-child(1n+{{ row_two }}) { margin-top:  {{ vert_spacing }}px; }
+	  }		
+	{% endmacro %}
+	
+	{{ flex_grid(".stat-blocks__row", 767, 3, 60, 60) }}
+	
+	#{{ name }} .stat-block {
+    border-radius: 18px;
+    overflow: hidden;
+    text-align: center;
+    {{ boxShadow("0px 10px 10px rgba(0,0,0,.3)") }}
+  }
+  
+  #{{ name }} .stat-block img {
+    filter: brightness(0)invert(1);
+  }
+  
+  #{{ name }} .stat-block * {
+    color: white;
+  }
+  
+  #{{ name }} .stat-block .stat-block__number span {
+    font-size: 3em;
+    font-weight: bold;
+  }
+	
+	/* DESKTOP ONLY STYLES */
+	@media screen and (min-width: 768px) { 
+    #{{ name }} .stat-block {
+      padding: 60px;
+    }
+	}
+	
+	@media screen and (max-width: 767px) { 
+    #{{ name }} .stat-block {
+      padding: 30px;
+    }
+  }
+  
+  @media screen and (max-width: 1229px) {
+    .stat-blocks__container {
+      padding: 0 30px;
+    }
+  }
+	
+</style>
+
+{% end_require_css %}
+
+{% require_js position="footer" %}
+<script>
+$(document).ready(function() {
+  $.getScript("https://cdn.jsdelivr.net/npm/countup@1.8.2/dist/countUp.min.js", function() {
+    $.fn.isInViewport = function() {
+      var elementTop = $(this).offset().top;
+      var elementBottom = elementTop + $(this).outerHeight();
+      var viewportTop = $(window).scrollTop();
+      var viewportBottom = viewportTop + $(window).height();
+      return elementBottom > viewportTop && elementTop < viewportBottom;
+    };
+    $(".counter").each(function() {
+      var el= $(this),
+          val = el.data("stat"),
+          id = el.attr("id"),
+          decimals = (val % 1 != 0) ? 2 : 0,
+          counter = new CountUp(id, 0, val, decimals, 2.5);
+      $(window).scroll(function() {
+        if (el.isInViewport() && !counter.error && !el.is(".counted")) {
+          counter.start();
+          el.addClass("counted");
+        }
+      });
+    });
+  });
+});
+</script>
+{% end_require_js %}

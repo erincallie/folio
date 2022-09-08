@@ -1,0 +1,166 @@
+.pov-laptop h2 {
+  font-weight: bolder;
+  font-size: 54px;
+  line-height: 1;
+  background: var(--purple-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient 1s ease infinite;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: var(--light-color);
+}
+
+.active {
+  z-index: 99999; 
+}
+
+.pov-laptop__container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 80px 15px;
+}
+
+.pov-laptop__row {
+  justify-content: space-between;
+  padding-top: 40px;
+  align-items: flex-start;
+}
+
+@media screen and (min-width: 768px) {
+  .pov-laptop__col.col--sections {
+    width: calc(100% - 740px);
+    margin-right: 60px;
+  }
+}
+
+.pov-laptop .col--sections .pov-section {
+  background-color: rgba(69, 82, 112, .2);
+  padding: 30px;
+  border-radius: 18px;
+  cursor: pointer;
+}
+
+.pov-laptop .col--sections .pov-section.active {
+  background-color: rgba(69, 82, 112, 1);
+}
+
+.pov-laptop .col--sections .pov-section + * {
+  margin-top: 30px;
+}
+
+.pov-laptop .col--sections .pov-section .pov-section__content {
+  height: auto;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.pov-laptop .col--sections .pov-section .pov-section__content p {
+  margin: 0;
+  padding: 0;
+}
+
+.pov-laptop .col--sections .pov-section .pov-section__title h4 {
+  margin: 0;
+}
+
+.pov-laptop .col--sections .pov-section.active .pov-section__content {
+  max-height: 1000px;
+}
+
+.pov-laptop .pov-laptop__descriptions {
+  padding: 30px;
+  position: absolute;
+  top: 60%;
+  right: 0;
+  width: 65%;
+  background: rgba(139, 95, 191, .9);
+  border-radius: 8px;
+  z-index: 999;
+}
+
+.pov-laptop .pov-laptop__descriptions * {
+  color: var(--light-color);
+  margin: 0;
+  padding: 0;
+}
+
+.pov-laptop .col--main {
+  position: relative;
+  max-width: 600px;
+}
+
+.pov-laptop .col--main .pov-laptop__screens .pov-screens__wrap {
+  aspect-ratio: 3/1.9;
+  height: auto;
+  left: 11.75%;
+  position: absolute;
+  top: 11.5%;
+  width: 76.5%;
+  opacity: 0;
+}
+
+.pov-laptop .pov-laptop__descriptions-wrap {
+  opacity: 0;
+}
+
+.pov-laptop .col--main .pov-laptop__screens .pov-screens__wrap.active, .pov-laptop .pov-laptop__descriptions-wrap.active {
+  opacity: 1;
+}
+
+.owl-carousel--pov img {
+  max-width: 100%; 
+  height: auto;
+}
+
+.pov-screens__wrap {
+  overflow: hidden; 
+}
+
+.pov-screens__wrap.active {
+  z-index: 999;
+}
+
+.owl-carousel--pov .owl-nav {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  top: 10px;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.owl-carousel--pov .owl-nav button {
+  appearance: none;
+  padding: 0;
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-color);
+  border: none;
+}
+
+button.disabled {
+  opacity: .6;
+  cursor: none;
+}
+
+.owl-carousel--pov .owl-nav button + button {
+  margin-left: 10px;
+}
+
+.owl-carousel--pov .owl-nav button span {
+  height: 1.25em;
+  color: var(--light-color);
+}
+
+.owl-stage {
+  display: flex;
+}
+
+.screen-description:not(.active), .pov-laptop .pov-laptop__descriptions-wrap:not(.active) {
+  display: none; 
+}

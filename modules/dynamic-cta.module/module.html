@@ -1,0 +1,193 @@
+{% if module.cta_active == true %}
+  <div class="dynamic-cta {{ name }} dynamic-cta--{{ module.cta_type }}{% if module.cta_type == "exit_intent" %} active{% endif %}{% if module.cta_settings.sticky_settings != "none" %} dynamic-cta--sticky sticky--{{ module.cta_settings.sticky_settings }}{% endif %}" {% if module.cta_type != "exit_intent" %}data-trigger="{{ module.cta_settings.trigger }}" data-scroll="{{ module.cta_settings.scroll_percent }}" data-time="{{ module.cta_settings.time_on_page }}"{% endif %}>
+    {% if module.cta_settings.allow_close == true && module.cta_type != "exit_intent" %}<i aria-hidden="true" class="fa fa-close dynamic-cta__close close-this"></i>{% endif %}
+    <div class="dynamic-cta__content">
+      {% if module.cta_content.title %}<h3>{{ module.cta_content.title }}</h3>{% endif %}
+      {% if module.cta_content.content %}{{ module.cta_content.content }}{% endif %}
+    </div>
+    <div class="dynamic-cta__assets">
+      {% for asset in module.cta_content.conversion_asset %}
+        {% if asset.select_conversion_asset == "button" %}
+          <div class="button-wrap">
+            {% set href = asset.button_link.url.href %}
+            {% if asset.button_link.url.type is equalto "EMAIL_ADDRESS" %}
+              {% set href = "mailto:" + href %}
+            {% endif %}
+            {% set rel = [] %}
+            {% if asset.button_link.no_follow %}
+              {% do rel.append("nofollow") %}
+            {% endif %}
+            {% if asset.button_link.open_in_new_tab %}
+              {% do rel.append("noopener") %}
+            {% endif %}
+              <a href="{{ href }}" class="hs-button button {% if asset.button_style %}button--{{ asset.button_style }}{% endif %}" 
+                 {% if asset.button_link.open_in_new_tab %}target="_blank"{% endif %}
+                 {% if rel %}rel="{{ rel|join(" ") }}"{% endif %}
+                 >
+                {{ asset.button_text }}
+              </a>
+          </div>
+        {% else if asset.select_conversion_asset == "form" %}
+          {% if asset.form_modal == true %}<a data-target="#{{ name }}__form--modal" class="button open-form">{{ asset.button_text }}</a>{% endif %}
+          <div id="{{ name }}__form--modal" class="dynamic-cta__form {% if asset.form_modal == true %}dynamic-cta__form--modal{% endif %}">
+            {% form
+                  form_to_use="{{ asset.form_field.form_id }}"
+                  response_response_type="{{ asset.form_field.response_type }}"
+                  response_message="{{ asset.form_field.message }}"
+                  response_redirect_id="{{ asset.form_field.redirect_id }}"
+                  response_redirect_url="{{ asset.form_field.redirect_url}}"
+                  gotowebinar_webinar_key="{{ asset.form_field.gotowebinar_webinar_key }}"
+                %}
+          </div>
+        {% else %}
+          {% cta guid="{{ asset.cta_field }}" %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+{% require_css %}
+  <style>
+    .{{ name }}.dynamic-cta {
+      background: {{ module.style.cta_styles.background_color.css }};
+      {% if module.style.cta_styles.background == "gradient" %}
+        background-image: {{ module.style.cta_styles.background_gradient.css }};
+      {% else %}
+        {{ module.style.cta_styles.background_image.css }}
+      {% endif %}
+      {{ module.style.cta_styles.spacing.css }}
+      {{ module.style.cta_styles.border.css }}
+      {{ module.style.cta_styles.text_alignment.css }};
+      border-radius: {{ module.style.cta_styles.border_radius }};
+      overflow: hidden;
+    }
+    {% if module.style.cta_styles.add_overlay == true %}
+      .{{ name }}.dynamic-cta:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        {% if module.style.cta_styles.overlay_background == "color" %}
+          background: {{ module.style.cta_styles.overlay_background_color.css }};
+        {% else if module.style.cta_styles.overlay_background == "gradient" %}
+          {{ module.style.cta_styles.overlay_background_gradient.css }}
+        {% else %}
+          {{ module.style.cta_styles.overlay_background_image.css }}
+        {% endif %}
+      }
+    {% endif %}
+    .{{ name }}.dynamic-cta h3 {
+      {{ module.style.cta_styles.heading_font.css }}
+    }
+    .{{ name }}.dynamic-cta p {
+      {{ module.style.cta_styles.content_font.css }}
+    }
+    .{{ name }}.dynamic-cta .dynamic-cta__form {
+      {% if module.style.form_styles.background == "color" %}
+      background: {{ module.style.form_styles.background_color.css }};
+      {% else if module.style.form_styles.background == "gradient" %}
+      {{ module.style.form_styles.background_gradient.css }}
+      {% else %}
+      {{ module.style.form_styles.background_image.css }}
+      {% endif %}
+      {{ module.style.form_styles.spacing.css }}
+      {{ module.style.form_styles.border.css }}
+      border-radius: {{ module.style.form_styles.border_radius }}px;
+      {{ module.style.form_styles.text_alignment.css }}
+    }
+    .{{ name }}.dynamic-cta .dynamic-cta__form .input input {
+      background: {{ module.style.form_styles.input_background_color.css }};
+      {{ module.style.form_styles.input_spacing.css }}
+      {{ module.style.form_styles.input_border.css }}
+      border-radius: {{ module.style.form_styles.input_border_radius }}px;
+      {{ module.style.form_styles.input_font.css }}
+    }
+    .{{ name }}.dynamic-cta .dynamic-cta__form label {
+      {{ module.style.form_styles.input_font.css }}
+    }
+    {% if module.style.form_styles.add_overlay == true %}
+      .{{ name }}.dynamic-cta .dynamic-cta__form:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        {% if module.style.form_styles.overlay_background == "color" %}
+          background: {{ module.style.form_styles.overlay_background_color.css }};
+        {% else if module.style.form_styles.overlay_background == "gradient" %}
+          {{ module.style.form_styles.overlay_background_gradient.css }}
+        {% else %}
+          {{ module.style.form_styles.overlay_background_image.css }}
+        {% endif %}
+      }
+    {% endif %}
+    .sticky-section.sticky-section--top {
+      top: {% if module.cta_settings.sticky_offset %}{{ module.cta_settings.sticky_offset }}px{% else %}0{% endif %};
+    }
+    {% if module.style.button_styles.custom_primary_button == true %}
+    .{{ name }}  a.button--primary {
+      background-color: {{ module.style.button_styles.primary_button.button_background_color.css }};
+      {{ module.style.button_styles.primary_button.button_border.css }}
+      border-radius: {{ module.style.button_styles.primary_button.button_border_radius }}px;
+      {{ module.style.button_styles.primary_button.button_font.css }};
+      {{ module.style.button_styles.primary_button.spacing.css }}
+    }
+    .{{ name }}  a.button--primary:hover {
+      background-color: {{ module.style.button_styles.primary_button.button_hover_background_color.css }};
+      {{ module.style.button_styles.primary_button.button_hover_font.css }}
+      {{ module.style.button_styles.primary_button.button_hover_border.css }}
+    }
+  {% endif %}
+  {% if module.style.button_styles.custom_secondary_button == true %}
+    .{{ name }}  a.button--secondary {
+      background-color: {{ module.style.button_styles.secondary_button.button_background_color.css }};
+      {{ module.style.button_styles.secondary_button.button_border.css }}
+      border-radius: color: {{ module.style.button_styles.secondary_button.button_border_radius }}px;
+      {{ module.style.button_styles.secondary_button.button_font.css }};
+      {{ module.style.button_styles.secondary_button.spacing.css }}
+    }
+    .{{ name }}  a.button--secondary:hover {
+      background-color: {{ module.style.button_styles.secondary_button.button_hover_background_color.css }};
+      {{ module.style.button_styles.secondary_button.button_hover_font.css }}
+      {{ module.style.button_styles.secondary_button.button_hover_border.css }}
+    }
+  {% endif %}
+  {% if module.style.button_styles.custom_submit_button == true %}
+    .{{ name }}  form .actions input[type="submit"] {
+      background-color: {{ module.style.button_styles.submit_button.button_background_color.css }};
+      {{ module.style.button_styles.submit_button.button_border.css }}
+      border-radius: color: {{ module.style.button_styles.submit_button.button_border_radius }}px;
+      {{ module.style.button_styles.submit_button.button_font.css }}
+      {{ module.style.button_styles.submit_button.spacing.css }}
+    }
+    .{{ name }}  form .actions input[type="submit"]:hover {
+      background-color: {{ module.style.button_styles.submit_button.button_hover_background_color.css }};
+      {{ module.style.button_styles.submit_button.button_hover_font.css }}
+      border-color: {{ module.style.button_styles.submit_button.button_hover_border.css }};
+    }
+  {% endif %}
+  </style>
+{% end_require_css %}
+
+{% require_js position="footer" %}
+  <script src="{{ get_asset_url('/Coded files/vendor/ysexit.js') }}"></script>
+  <script>
+    var exit_intent = $('.dynamic-cta--exit_intent');
+    if (exit_intent.length > 0) {
+      exit_intent.ysExit({
+          width: '40%',
+          height: '30%', 
+          target: '#ys-container', 
+          cookieValidity: 1, 
+          closeOnOutsideClick: true, 
+          delay: 0, 
+          debug: false,
+          cookieName: 'ysExit'
+        });
+    }
+  </script>
+{% end_require_js %}

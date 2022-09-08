@@ -1,0 +1,156 @@
+[ {
+  "id" : "b1511bf7-07a3-d183-c888-3bec7a6b0158",
+  "name" : "style",
+  "display_width" : null,
+  "label" : "Styling Options",
+  "required" : false,
+  "locked" : false,
+  "children" : [ ],
+  "tab" : "STYLE",
+  "expanded" : false,
+  "type" : "group",
+  "default" : { }
+}, {
+  "id" : "8d7b994a-9a72-f2e0-9536-9ef4a039a044",
+  "name" : "items",
+  "display_width" : null,
+  "label" : "Blocks",
+  "required" : false,
+  "locked" : false,
+  "occurrence" : {
+    "min" : null,
+    "max" : null,
+    "sorting_label_field" : "cffc89cf-a321-538e-81c9-f331d7d4f826",
+    "default" : null
+  },
+  "children" : [ {
+    "id" : "cffc89cf-a321-538e-81c9-f331d7d4f826",
+    "name" : "title",
+    "display_width" : null,
+    "label" : "Title",
+    "required" : false,
+    "locked" : false,
+    "validation_regex" : "",
+    "allow_new_line" : false,
+    "show_emoji_picker" : false,
+    "type" : "text",
+    "default" : "Lorem ipsum."
+  }, {
+    "id" : "9a9d85e5-76d5-2cba-ddf2-c7588978a2b3",
+    "name" : "tools",
+    "display_width" : null,
+    "label" : "Tools",
+    "required" : false,
+    "locked" : false,
+    "occurrence" : {
+      "min" : null,
+      "max" : null,
+      "sorting_label_field" : null,
+      "default" : null
+    },
+    "validation_regex" : "",
+    "allow_new_line" : false,
+    "show_emoji_picker" : false,
+    "type" : "text"
+  }, {
+    "id" : "b74fe9c2-d288-a909-6c2e-2608ee49df57",
+    "name" : "code",
+    "display_width" : null,
+    "label" : "Code",
+    "required" : false,
+    "locked" : false,
+    "occurrence" : {
+      "min" : null,
+      "max" : null,
+      "sorting_label_field" : null,
+      "default" : null
+    },
+    "validation_regex" : "",
+    "allow_new_line" : false,
+    "show_emoji_picker" : false,
+    "type" : "text"
+  }, {
+    "id" : "28296f57-36ba-0328-7508-b008fbfdfc98",
+    "name" : "industries",
+    "display_width" : null,
+    "label" : "Industries",
+    "required" : false,
+    "locked" : false,
+    "occurrence" : {
+      "min" : null,
+      "max" : null,
+      "sorting_label_field" : null,
+      "default" : null
+    },
+    "validation_regex" : "",
+    "allow_new_line" : false,
+    "show_emoji_picker" : false,
+    "type" : "text"
+  }, {
+    "id" : "13480009-b2e4-e9cd-66e1-af4fe4eea046",
+    "name" : "tags",
+    "display_width" : null,
+    "label" : "Tags",
+    "required" : false,
+    "locked" : false,
+    "occurrence" : {
+      "min" : null,
+      "max" : null,
+      "sorting_label_field" : null,
+      "default" : null
+    },
+    "validation_regex" : "",
+    "allow_new_line" : false,
+    "show_emoji_picker" : false,
+    "type" : "text"
+  }, {
+    "id" : "dd4f0f7f-7629-45d6-debf-7481c7d7e688",
+    "name" : "description",
+    "display_width" : null,
+    "label" : "Description",
+    "inline_help_text" : "Text shown in thumbnail.",
+    "required" : false,
+    "locked" : false,
+    "type" : "richtext"
+  }, {
+    "id" : "f63dfacb-d134-5639-ceb5-b58277022d16",
+    "name" : "content",
+    "display_width" : null,
+    "label" : "Content",
+    "inline_help_text" : "Text shown in popup.",
+    "required" : false,
+    "locked" : true,
+    "type" : "richtext",
+    "default" : "<p>Lorem ipsum dolor sit.</p>"
+  }, {
+    "id" : "573e5ec7-2bf0-2ddf-09d2-33644834f18d",
+    "name" : "image",
+    "display_width" : null,
+    "label" : "Image",
+    "required" : false,
+    "locked" : false,
+    "responsive" : true,
+    "resizable" : true,
+    "show_loading" : false,
+    "type" : "image",
+    "default" : {
+      "size_type" : "auto",
+      "src" : "",
+      "alt" : null,
+      "loading" : "lazy"
+    }
+  } ],
+  "tab" : "CONTENT",
+  "expanded" : false,
+  "type" : "group",
+  "default" : {
+    "title" : "Lorem ipsum.",
+    "content" : "<p>Lorem ipsum dolor sit.</p>",
+    "image" : {
+      "size_type" : "auto",
+      "src" : "",
+      "alt" : null,
+      "loading" : "lazy"
+    }
+  }
+} ]

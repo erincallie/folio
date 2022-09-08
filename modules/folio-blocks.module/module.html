@@ -1,0 +1,209 @@
+{% macro slugify_category(prefix, string) %}
+  {{ prefix ~ string|lower|replace(" ", "_")|replace("&", "and")|replace("/", "-")|trim }}
+{% endmacro %}
+
+{% macro get_svg(name) %}
+  {% if name == "tools" %}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M331.8 224.1c28.29 0 54.88 10.99 74.86 30.97l19.59 19.59c40.01-17.74 71.25-53.3 81.62-96.65c5.725-23.92 5.34-47.08 .2148-68.4c-2.613-10.88-16.43-14.51-24.34-6.604l-68.9 68.9h-75.6V97.2l68.9-68.9c7.912-7.912 4.275-21.73-6.604-24.34c-21.32-5.125-44.48-5.51-68.4 .2148c-55.3 13.23-98.39 60.22-107.2 116.4C224.5 128.9 224.2 137 224.3 145l82.78 82.86C315.2 225.1 323.5 224.1 331.8 224.1zM384 278.6c-23.16-23.16-57.57-27.57-85.39-13.9L191.1 158L191.1 95.99l-127.1-95.99L0 63.1l96 127.1l62.04 .0077l106.7 106.6c-13.67 27.82-9.251 62.23 13.91 85.39l117 117.1c14.62 14.5 38.21 14.5 52.71-.0016l52.75-52.75c14.5-14.5 14.5-38.08-.0016-52.71L384 278.6zM227.9 307L168.7 247.9l-148.9 148.9c-26.37 26.37-26.37 69.08 0 95.45C32.96 505.4 50.21 512 67.5 512s34.54-6.592 47.72-19.78l119.1-119.1C225.5 352.3 222.6 329.4 227.9 307zM64 472c-13.25 0-24-10.75-24-24c0-13.26 10.75-24 24-24S88 434.7 88 448C88 461.3 77.25 472 64 472z"/></svg>
+  {% elif name == "code" %}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M414.8 40.79L286.8 488.8C281.9 505.8 264.2 515.6 247.2 510.8C230.2 505.9 220.4 488.2 225.2 471.2L353.2 23.21C358.1 6.216 375.8-3.624 392.8 1.232C409.8 6.087 419.6 23.8 414.8 40.79H414.8zM518.6 121.4L630.6 233.4C643.1 245.9 643.1 266.1 630.6 278.6L518.6 390.6C506.1 403.1 485.9 403.1 473.4 390.6C460.9 378.1 460.9 357.9 473.4 345.4L562.7 256L473.4 166.6C460.9 154.1 460.9 133.9 473.4 121.4C485.9 108.9 506.1 108.9 518.6 121.4V121.4zM166.6 166.6L77.25 256L166.6 345.4C179.1 357.9 179.1 378.1 166.6 390.6C154.1 403.1 133.9 403.1 121.4 390.6L9.372 278.6C-3.124 266.1-3.124 245.9 9.372 233.4L121.4 121.4C133.9 108.9 154.1 108.9 166.6 121.4C179.1 133.9 179.1 154.1 166.6 166.6V166.6z"/></svg>
+  {% elif name == "industries" %}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M88 104C88 95.16 95.16 88 104 88H152C160.8 88 168 95.16 168 104V152C168 160.8 160.8 168 152 168H104C95.16 168 88 160.8 88 152V104zM280 88C288.8 88 296 95.16 296 104V152C296 160.8 288.8 168 280 168H232C223.2 168 216 160.8 216 152V104C216 95.16 223.2 88 232 88H280zM88 232C88 223.2 95.16 216 104 216H152C160.8 216 168 223.2 168 232V280C168 288.8 160.8 296 152 296H104C95.16 296 88 288.8 88 280V232zM280 216C288.8 216 296 223.2 296 232V280C296 288.8 288.8 296 280 296H232C223.2 296 216 288.8 216 280V232C216 223.2 223.2 216 232 216H280zM0 64C0 28.65 28.65 0 64 0H320C355.3 0 384 28.65 384 64V448C384 483.3 355.3 512 320 512H64C28.65 512 0 483.3 0 448V64zM48 64V448C48 456.8 55.16 464 64 464H144V400C144 373.5 165.5 352 192 352C218.5 352 240 373.5 240 400V464H320C328.8 464 336 456.8 336 448V64C336 55.16 328.8 48 320 48H64C55.16 48 48 55.16 48 64zM448 0C465.7 0 480 14.33 480 32H624C632.8 32 640 39.16 640 48V176C640 184.8 632.8 192 624 192H480V512H416V32C416 14.33 430.3 0 448 0z"/></svg>
+  {% endif %}
+{% endmacro %}
+
+{% set tag_filters = [] %}
+{% set tool_filters = [] %}
+{% set code_filters = [] %}
+{% set industry_filters = [] %}
+{% for item in module.items %}
+  {% for tag in item.tags %}
+    {% do tag_filters.append([tag,slugify_category("tag--",tag)|trim]) %}
+  {% endfor %}
+  {% for tool in item.tools %}
+    {% do tool_filters.append([tool,slugify_category("tool--",tool)|trim]) %}
+  {% endfor %}
+  {% for language in item.code %}
+    {% do code_filters.append([language,slugify_category("code--",language)|trim]) %}
+  {% endfor %}
+  {% for industry in item.industries %}
+    {% do industry_filters.append([industry,slugify_category("industry--",industry)|trim]) %}
+  {% endfor %}
+{% endfor %}
+
+{% set all_filters = filters|unique %}
+<div id="{{ name }}" class="folio-blocks">
+  <div class="folio-blocks__container">
+    <div class="folio-blocks__filters">
+      <ul>
+        <li class="clear-all active"><a data-filter="*">Clear Filters</a></li>
+        {% for this_filter in all_filters %}
+          <li><a data-filter=".{{ this_filter[1]|trim }}">{{ this_filter[0] }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="folio-blocks__filters">
+      {% if tag_filters != [] %}<div class="folio-blocks__filters-wrap"><h4>Tags:</h4><ul>{% for tag in tag_filters|unique %}<li><a data-filter=".{{ tag[1] }}">{{ tag[0] }}</a></li>{% endfor %}</ul></div>{% endif %}
+      {% if tool_filters != [] %}<div class="folio-blocks__filters-wrap"><h4>Tools:</h4><ul>{% for tool in tool_filters|unique %}<li><a data-filter=".{{ tool[1] }}">{{ tool[0] }}</a></li>{% endfor %}</ul></div>{% endif %}
+      {% if code_filters != [] %}<div class="folio-blocks__filters-wrap"><h4>Code:</h4><ul>{% for language in code_filters|unique %}<li><a data-filter=".{{ language[1] }}">{{ language[0] }}</a></li>{% endfor %}</ul></div>{% endif %}
+      {% if industry_filters != [] %}<div class="folio-blocks__filters-wrap"><h4>Industries:</h4><ul>{% for industry in industry_filters|unique %}<li><a data-filter=".{{ industry[1] }}">{{ industry[0] }}</a></li>{% endfor %}</ul></div>{% endif %}
+    </div>
+    <div class="folio-blocks__blocks equal-height">
+      {% for item in module.items %}
+        {% set item_classes = [] %}
+        {% for tag in item.tags %}{% do item_classes.append(slugify_category("tag--",tag)|trim) %}{% endfor %}
+        {% for tool in item.tools %}{% do item_classes.append(slugify_category("tool--",tool)|trim) %}{% endfor %}
+        {% for language in item.code %}{% do item_classes.append(slugify_category("code--",language)|trim) %}{% endfor %}
+        {% for industry in item.industries %}{% do item_classes.append(slugify_category("industry--",industry)|trim) %}{% endfor %}
+        <div class="folio-blocks__block folio-block {{ item_classes|join(" ") }}">
+          <div class="folio-block__image" style="background-image: url({{ item.image.src }});">
+            {% if item.image.src %}
+              {% set sizeAttrs = 'width="{{ item.image.width }}" height="{{ item.image.height }}"' %}
+              {% if item.image.size_type == 'auto' %}
+                {% set sizeAttrs = 'style="max-width: 100%; height: auto;"' %}
+              {% elif item.image.size_type == 'auto_custom_max' %}
+                {% set sizeAttrs = 'width="{{ item.image.max_width }}" height="{{ item.image.max_height }}" style="max-width: 100%; height: auto;"' %}
+              {% endif %}
+              {% set loadingAttr = item.image.loading != 'disabled' ? 'loading="{{ item.image.loading }}"' : '' %}
+              <img style="overflow: clip; height: 0;" data-src="{{ item.image.src }}" alt="{{ item.image.alt }}" {{ loadingAttr }}>
+            {% endif %}
+          </div>
+          <div class="folio-block__filters">
+            {% if item.tags != [] %}<ul class="filters__filter filter--tags">{% for tag in item.tags %}<li>{{ tag }}</li>{% endfor %}</ul>{% endif %}
+            {% if item.tools != [] %}<ul class="filters__filter filter--tools"><li class="filters__icon">{{ get_svg("tools") }}</li>{% for tool in item.tools %}<li>{{ tool }}</li>{% endfor %}</ul>{% endif %}
+            {% if item.code != [] %}<ul class="filters__filter filter--code"><li class="filters__icon">{{ get_svg("code") }}</li>{% for language in item.code %}<li>{{ language }}</li>{% endfor %}</ul>{% endif %}
+            {% if item.industries != [] %}<ul class="filters__filter filter--industry"><li class="filters__icon">{{ get_svg("industries") }}</li>{% for industry in item.industries %}<li>{{ industry }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+          <div class="folio-block__content">
+            {% if item.title %}<h3>{{ item.title }}</h3>{% endif %}
+            {% if item.description %}
+              <div class="folio-block__content-description">
+                {{ item.description }}
+              </div>
+            {% endif %}
+            <!--<div class="folio-block__content-cta">
+              <a href="#" class="button button--primary">See Details</a>
+            </div>-->
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="folio-blocks__details folio-details">
+      {% for item in module.items %}
+        <div class="folio-details__pop details-pop">
+          <div class="details-pop__inner">
+            <div class="details-pop__row">
+              <div class="details-pop__col col--image">
+                <div class="details-pop__image">
+                  {% if item.image.src %}
+                    {% set sizeAttrs = 'width="{{ item.image.width }}" height="{{ item.image.height }}"' %}
+                    {% if item.image.size_type == 'auto' %}
+                      {% set sizeAttrs = 'style="max-width: 100%; height: auto;"' %}
+                    {% elif item.image.size_type == 'auto_custom_max' %}
+                      {% set sizeAttrs = 'width="{{ item.image.max_width }}" height="{{ item.image.max_height }}" style="max-width: 100%; height: auto;"' %}
+                    {% endif %}
+                    {% set loadingAttr = item.image.loading != 'disabled' ? 'loading="{{ item.image.loading }}"' : '' %}
+                    <img data-src="{{ item.image.src }}" alt="{{ item.image.alt }}" {{ loadingAttr }}>
+                  {% endif %}
+                </div>
+                <div class="details-pop__filters">
+                  {% if item.tags != [] %}<h4>Tags:</h4><ul>{% for tag in item.tags %}<li>{{ tag }}</li>{% endfor %}</ul>{% endif %}
+                  {% if item.tools != [] %}<h4>Tools:</h4><ul>{% for tool in item.tools %}<li>{{ tool }}</li>{% endfor %}</ul>{% endif %}
+                  {% if item.code != [] %}<h4>Code:</h4><ul>{% for language in item.code %}<li>{{ language }}</li>{% endfor %}</ul>{% endif %}
+                  {% if item.industries != [] %}<h4>Industries:</h4><ul>{% for industry in item.industries %}<li>{{ industry }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+              </div>
+              <div class="details-pop__col col--content">
+                <div class="details-pop__content">
+                  {% if item.title %}<h3>{{ item.title }}</h3>{% endif %}
+                  {% if item.content %}
+                    <div class="details-pop__content-wrap">
+                      {{ item.content }}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% require_css %}
+
+<style>
+
+  {% macro transition(value) %}-webkit-transition: {{ value }};-moz-transition: {{ value }};-o-transition: {{ value }};-ms-transition: {{ value }};transition: {{ value }};{% endmacro %}
+  {% macro borderRadius(value) %}-webkit-border-radius: {{ value }};-moz-border-radius: {{ value }};-o-border-radius: {{ value }};-ms-border-radius: {{ value }};border-radius: {{ value }};{% endmacro %}
+  {% macro boxShadow(value) %}-webkit-box-shadow: {{ value }};-moz-box-shadow: {{ value }};-o-box-shadow: {{ value }};-ms-box-shadow: {{ value }};box-shadow: {{ value }};{% endmacro %}
+  {% macro textShadow(value) %}-webkit-text-shadow: {{ value }};-moz-text-shadow: {{ value }};-o-text-shadow: {{ value }};-ms-text-shadow: {{ value }};text-shadow: {{ value }};{% endmacro %}
+  {% macro transform(value) %}-webkit-transform: {{ value }};-moz-transform: {{ value }};-o-transform: {{ value }};-ms-transform: {{ value }}; transform: {{ value }};{% endmacro %}
+
+  .folio-block {
+    {{ boxShadow("0px 0px 18px rgba(0,0,0,.1)") }}
+  }
+  
+  .folio-blocks__filters-wrap a, .clear-all a, .folio-blocks .folio-blocks__block .folio-block__content-description, .folio-blocks .folio-blocks__block {
+    {{ transition("all .5s ease-in-out") }}
+  }
+  
+  .folio-block__filters ul:hover {
+    z-index: 9999;
+  }
+  
+  .folio-blocks .folio-blocks__block:hover {
+    {{ transform("scale(1.1)") }}
+  }
+  
+
+</style>
+{% end_require_css %}
+
+{% require_js position="footer" %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha512-Zq2BOxyhvnRFXu0+WE6ojpZLOU2jdnqbrM1hmVdGzyeCa1DgM3X5Q4A/Is9xA1IkbUeDd7755dNNI/PzSf2Pew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  
+  $(document).ready(function() {
+    
+      var equal_height_blocks = function() {
+      var equalize = $(".equal-height"),
+          max_height = 0;
+      if (equalize.length > 0) {
+        equalize.each(function() {
+          var blocks = $(this).find(".folio-blocks__block");
+          blocks.each(function() {
+            var height = $(this).outerHeight();
+            if (height > max_height) {
+              max_height = height;
+            }
+          });
+          var new_height = max_height - 100;
+          blocks.each(function() {
+            $(this).css("height", new_height);
+          });
+        });
+      }
+    };
+    // init Isotope
+    var $grid = $('.folio-blocks__blocks').isotope({
+      itemSelector: '.folio-blocks__block',
+      layoutMode: 'fitRows'
+    });
+    
+    //equal_height_blocks();
+
+    // bind filter button click
+    $('.folio-blocks__filters').on( 'click', 'a', function() {
+      var filterValue = $(this).attr('data-filter');
+      $grid.isotope({ filter: filterValue });
+      $(this).addClass("active").siblings().removeClass("active");
+      $(this).closest(".folio-blocks__filters-wrap").siblings().find("a").removeClass("active");
+    });
+  
+  });
+
+
+</script>
+{% end_require_js %}

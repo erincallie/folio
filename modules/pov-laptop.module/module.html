@@ -1,0 +1,226 @@
+{% macro content_section(section) %}
+<div class="pov-section section--{{ loop.index }}{% if loop.first %} active{% endif %}">
+  <div class="pov-section__inner">
+    <div class="pov-section__title">
+      <h4>{{ section.title }}</h4>
+    </div>
+    <div class="pov-section__content">
+      {{ section.content }}
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro screen_wrap(section) %}
+  <div class="pov-screens__wrap wrap--{{ loop.index }}{% if loop.first %} active{% endif %}">
+    {{ caller() }}
+  </div>
+{% endmacro %}
+
+{% macro screen_carousel(screens) %}
+  {% if screens != [] %}
+    <div class="pov-carousel owl-carousel owl-carousel--pov">
+      {% for screen in screens %}
+        <div class="pov-carousel__item">
+          <div class="pov-carousel__item-image">
+            <img data-src="{{ screen.image.src }}" alt="{{ screen.image.alt }}" width="{{ screen.image.width }}" height="{{ screen.image.height }}">
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+<div id="{{ name }}" class="pov-laptop section section--dark" data-autoplay="true">
+  <div class="pov-laptop__container">
+    <div class="pov-laptop__content">
+      {% if module.intro_content %}{{ module.intro_content }}{% endif %}
+    </div>
+    <div class="pov-laptop__row">
+      <div class="pov-laptop__col col--sections">
+        <div class="pov-laptop__sections">
+          {% for item in module.sections %}
+            {{ content_section(item) }}
+          {% endfor %}
+        </div>
+      </div>
+      <div class="pov-laptop__col col--main">
+        <div class="pov-laptop__mockup">
+          {% if module.mockup.src %}
+            <img data-src="{{ module.mockup.src }}" alt="{{ module.mockup.alt }}" width="{{ module.mockup.width }}" height="{{ module.mockup.height }}" style="max-width: 100%; height: auto;">
+          {% endif %}
+        </div>
+        <div class="pov-laptop__screens">
+          {% for item in module.sections %}
+            {% call screen_wrap(item) %}
+              {{ screen_carousel(item.screens) }}
+            {% endcall %}
+          {% endfor %}
+        </div>
+        <div class="pov-laptop__descriptions">
+          {% for item in module.sections %}
+            <div class="pov-laptop__descriptions-wrap descriptions--{{ loop.index }}{% if loop.first %} active{% endif %}">
+              {% for screen in item.screens %}
+                <div class="screen-description{% if loop.first %} active{% endif %}">
+                  {{ screen.description }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% require_css %}
+<style>
+  
+  {% macro transition(value) %}-webkit-transition: {{ value }};-moz-transition: {{ value }};-o-transition: {{ value }};-ms-transition: {{ value }};transition: {{ value }};{% endmacro %}
+  {% macro borderRadius(value) %}-webkit-border-radius: {{ value }};-moz-border-radius: {{ value }};-o-border-radius: {{ value }};-ms-border-radius: {{ value }};border-radius: {{ value }};{% endmacro %}
+  {% macro boxShadow(value) %}-webkit-box-shadow: {{ value }};-moz-box-shadow: {{ value }};-o-box-shadow: {{ value }};-ms-box-shadow: {{ value }};box-shadow: {{ value }};{% endmacro %}
+  {% macro textShadow(value) %}-webkit-text-shadow: {{ value }};-moz-text-shadow: {{ value }};-o-text-shadow: {{ value }};-ms-text-shadow: {{ value }};text-shadow: {{ value }};{% endmacro %}
+  {% macro transform(value) %}-webkit-transform: {{ value }};-moz-transform: {{ value }};-o-transform: {{ value }};-ms-transform: {{ value }}; transform: {{ value }};{% endmacro %}
+
+  .pov-laptop h2 {
+    {{ textShadow("10px 10px 15px rgba(0,0,0,.4)") }} 
+  }
+  
+  .pov-laptop .col--sections .pov-section .pov-section__content,
+  .pov-laptop .col--main .pov-laptop__screens .pov-screens__wrap,
+  .pov-laptop .pov-laptop__descriptions-wrap {
+    {{ transition("all .5s ease-in-out") }} 
+  }
+  
+  .pov-laptop .col--sections .pov-section,
+  .pov-laptop .pov-laptop__descriptions,
+  .owl-carousel--pov .owl-nav button {
+    {{ boxShadow("0px 0px 18px rgba(0,0,0,.1)") }}
+  }
+  
+</style>
+{% end_require_css %}
+
+{% require_js position="footer" defer="true" %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+
+  $(document).ready(function() {
+    
+    var init_slider = function(carousel) {
+    carousel.each(function() {
+      $(this).owlCarousel({
+        loop:false,
+        center: false,
+        margin:0,
+        nav:true,
+        dots:false,
+        autoplay:false,
+        autoheight: false,
+        responsive:{
+          0:{
+            items:1
+          },
+          787:{
+            items:1
+          },
+          1200:{
+            items:1
+          }
+        },
+        singleItem:true
+      });
+    });
+  },
+      owl_resize = function(carousel) {
+        carousel.trigger('destroy.owl.carousel');
+        carousel.html(carousel.find('.owl-stage-outer').html()).removeClass('owl-loaded');
+        init_slider(carousel);
+      },
+      handle_clicks = function() {
+        var sections = $(".pov-laptop__sections > *");
+        sections.click(function() {
+          var classes = $(this).attr('class').split(' ');
+          $(".pov-laptop").attr("data-autoplay", "false");
+          $.each(classes, function() {
+            if (this.indexOf("section--") >= 0) {
+              var class_target = this.split("--")[1],
+                  all_objects = $(".pov-laptop").find("div[class*='--" + class_target + "']");
+              all_objects.each(function() {
+                $(this).addClass("active").siblings().removeClass("active");
+              });
+            }
+          });
+          $(this).addClass("active").siblings().removeClass("active");
+        });
+      },
+        autoplay_init = function() {
+          var timing = 8000,
+              sections = $(".pov-laptop__sections > div"),
+              screens = $(".pov-laptop__screens > div"),
+              descriptions = $(".pov-laptop__descriptions > div");
+            setInterval(function(){
+              var cur = $(".pov-laptop__sections > div.active").index(),
+                  nxt = (cur + 1) % sections.length,
+                  autoplay = $(".pov-laptop").data("autoplay");
+              if (autoplay) {
+                sections.eq(cur).removeClass("active");
+                sections.eq(nxt).addClass("active");
+                screens.eq(cur).removeClass("active");
+                screens.eq(nxt).addClass("active");
+                descriptions.eq(cur).removeClass("active");
+                descriptions.eq(nxt).addClass("active");
+              }
+            }, timing);
+        };
+        
+    
+      autoplay_init();
+    
+      $(".owl-carousel img").on("load", function() {
+        var carousel = $('.owl-carousel--pov');
+        carousel.each(function() {
+          init_slider($(this));
+        });
+        handle_clicks();
+        
+      });
+    
+      $(".pov-laptop").on("click", ".owl-nav button.owl-next", function() {
+          var wrap = $(this).closest(".pov-screens__wrap");
+          var classes = wrap.attr('class').split(' ');
+          $(".pov-laptop").attr("data-autoplay", "false");
+          $.each(classes, function() {
+            if (this.indexOf("wrap--") >= 0) {
+              var class_target = this.split("--")[1],
+                  active_slide = $(".descriptions--" + class_target + " > .active");
+              active_slide.removeClass("active").next().addClass("active");
+            }
+          });
+        });
+        $(".pov-laptop").on("click", ".owl-nav button.owl-prev", function() {
+          var wrap = $(this).closest(".pov-screens__wrap");
+          var classes = wrap.attr('class').split(' ');
+          $(".pov-laptop").attr("data-autoplay", "false");
+          $.each(classes, function() {
+            if (this.indexOf("wrap--") >= 0) {
+              var class_target = this.split("--")[1],
+                  active_slide = $(".descriptions--" + class_target + " > .active");
+              active_slide.removeClass("active").prev().addClass("active");
+            }
+          });
+        });
+    
+
+    $(window).resize(function() {
+      carousel.each(function() {
+        owl_resize($(this));
+      });
+    });
+    
+    
+    
+  });
+
+</script>
+{% end_require_js %}

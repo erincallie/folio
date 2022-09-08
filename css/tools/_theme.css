@@ -1,0 +1,331 @@
+/* Colors */
+
+{% set scheme = theme.theme_options.color_scheme %}
+{% set primary_color = theme.global_colors.primary_color.color  %}
+{% set secondary_color = theme.global_colors.secondary_color.color %}
+{% set tertiary_color = theme.global_colors.tertiary_color.color %}
+{% set light_color = theme.global_colors.light_color.color %}
+{% set dark_color = theme.global_colors.dark_color.color %}
+
+body {
+  --primary-color: {{ primary_color }};
+  --secondary-color:  {{ secondary_color }};
+  --tertiary-color:  {{ tertiary_color }};
+  --light-color:  {{ light_color }};
+  --dark-color:  {{ dark_color }};
+  --purple-gradient: linear-gradient(to bottom right, rgba(186, 84, 138, 1), rgba(139, 95, 191, 1), rgba(98, 121, 184, 1), rgba(69, 82, 112, 1));
+  --orange-gradient: linear-gradient(to right, #f9d423 0%, #ff4e50 100%);
+}
+
+body.light {
+  --bg-color: {{ light_color }};
+  --heading-color: {{ primary_color }};
+  --text-color: {{ tertiary_color }};
+  --link-color: {{ primary_color }};
+  --button-style: 'primary';
+  --light-color: {{ light_color }};
+  --dark-color: {{ dark_color }};
+}
+ 
+body.dark {
+  --bg-color: {{ dark_color }};
+  --heading-color: {{ light_color }};
+  --text-color: {{ light_color }};
+  --link-color: {{ primary_color }};
+  --button-style: 'primary';
+  --light-color: {{ dark_color }};
+  --dark-color: {{ light_color }};
+  --tertiary-color:  {{ secondary_color }};
+  --secondary-color:  {{ tertiary_color }};
+}
+
+body.dark .section--light, body.dark .section--light div[class$="__background"] {
+  background-color: {{ dark_color }};
+}
+
+/*@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: {{ dark_color }};
+    --heading-color: {{ light_color }};
+    --text-color: {{ light_color }};
+    --link-color: {{ primary_color }};
+    --button-style: 'primary';
+  }
+}*/
+
+{% set button_styles = {
+  'primary': {
+    'color': theme.button_styles.primary_button.default.text_color.color,
+    'background-color': theme.button_styles.primary_button.default.background_color.color,
+    'border-color': theme.button_styles.primary_button.default.border_color.color
+  },
+  'primary-hover': {
+    'color': theme.button_styles.primary_button.hovered.text_color.color,
+    'background-color': theme.button_styles.primary_button.hovered.background_color.color,
+    'border-color': theme.button_styles.primary_button.hovered.border_color.color
+  },
+  'secondary': {
+    'color': theme.button_styles.secondary_button.default.text_color.color,
+    'background-color': theme.button_styles.secondary_button.default.background_color.color,
+    'border-color': theme.button_styles.secondary_button.default.border_color.color
+  },
+  'secondary-hover': {
+    'color': theme.button_styles.secondary_button.hovered.text_color.color,
+    'background-color': theme.button_styles.secondary_button.hovered.background_color.color,
+    'border-color': theme.button_styles.secondary_button.hovered.border_color.color
+  },
+  'tertiary': {
+    'color': theme.button_styles.tertiary_button.default.text_color.color,
+    'background-color': theme.button_styles.tertiary_button.default.background_color.color,
+    'border-color': theme.button_styles.tertiary_button.default.border_color.color
+  },
+  'tertiary-hover': {
+    'color': theme.button_styles.tertiary_button.hovered.text_color.color,
+    'background-color': theme.button_styles.tertiary_button.hovered.background_color.color,
+    'border-color': theme.button_styles.tertiary_button.hovered.border_color.color
+  },
+  'light': {
+    'color': theme.button_styles.light_button.default.text_color.color,
+    'background-color': theme.button_styles.light_button.default.background_color.color,
+    'border-color': theme.button_styles.light_button.default.border_color.color
+  },
+  'light-hover': {
+    'color': theme.button_styles.light_button.hovered.text_color.color,
+    'background-color': theme.button_styles.light_button.hovered.background_color.color,
+    'border-color': theme.button_styles.light_button.hovered.border_color.color
+  },
+   'dark': {
+      'color': theme.button_styles.dark_button.default.text_color.color,
+      'background-color': theme.button_styles.dark_button.default.background_color.color,
+      'border-color': theme.button_styles.dark_button.default.border_color.color
+    },
+    'dark-hover': {
+      'color': theme.button_styles.dark_button.hovered.text_color.color,
+      'background-color': theme.button_styles.dark_button.hovered.background_color.color,
+      'border-color': theme.button_styles.dark_button.hovered.border_color.color
+    }
+} %}
+
+.button, .hs-button, .cta_button {
+  {% if theme.button_styles.general.uppercase == "true" %}text-transform: uppercase;{% endif %}
+  {% if theme.button_styles.general.letter_spacing != "0" %}letter-spacing: {{ theme.button_styles.general.letter_spacing }}px;{% endif %}
+  {% if theme.button_styles.general.button_font %}{{ theme.button_styles.general.button_font.css }}{% endif %}
+}
+
+{% macro get_button(target, button_option, button_style) %}
+  {% if button_style.split("_")|last == "outline" %}
+    {% set base = button_styles[button_style.split("_")|first] %}
+    {{ target }} .button.button--{{ button_option }},
+    {{ target }} .hs-button.button--{{ button_option }},
+    {{ target }} .cta_button.button--{{ button_option }} {
+      background-color: transparent !important;
+      color: {{ base["border-color"] }};
+      border-color: {{ base["border-color"] }};
+    }
+    {{ target }} .button.button--{{ button_option }}:hover,
+    {{ target }} .hs-button.button--{{ button_option }}:hover,
+    {{ target }} .cta_button.button--{{ button_option }}:hover {
+      color: {{ base["color"] }};
+      border-color: {{ base["border-color"] }};
+      background-color: {{ base["border-color"] }} !important;
+    }
+  {% else %}
+    {% set base = button_styles[button_style] %}
+    {% set hover = button_styles[button_style + "-hover"] %}
+    {{ target }} .button.button--{{ button_option }},
+    {{ target }} .hs-button.button--{{ button_option }},
+    {{ target }} .cta_button.button--{{ button_option }} {
+      background-color: {{ base["background-color"] }} !important;
+      color: {{ base["color"] }};
+      border-color: {{ base["border-color"] }};
+    }
+    {{ target }} .button.button--{{ button_option }}:hover,
+    {{ target }} .hs-button.button--{{ button_option }}:hover,
+    {{ target }} .cta_button.button--{{ button_option }}:hover {
+      background-color: {{ hover["background-color"] }} !important;
+      color: {{ hover["color"] }};
+      border-color: {{ hover["border-color"] }};
+    }
+  {% endif %}
+{% endmacro %}
+
+{% macro build_button(target, button_style) %}
+  {% if button_style.split("_")|last == "outline" %}
+    {% set base = button_styles[button_style.split("_")|first] %}
+    {{ target }} {
+      background-color: transparent !important;
+      color: {{ base["border-color"] }};
+      border-color: {{ base["border-color"] }};
+    }
+    {{ target }}:hover {
+      color: {{ base["color"] }};
+      border-color: {{ base["border-color"] }};
+      background-color: {{ base["border-color"] }} !important;
+    }
+  {% else %}
+    {% set base = button_styles[button_style] %}
+    {% set hover = button_styles[button_style + "-hover"] %}
+    {{ target }} {
+      background-color: {{ base["background-color"] }} !important;
+      color: {{ base["color"] }};
+      border-color: {{ base["border-color"] }};
+    }
+    {{ target }}:hover {
+      background-color: {{ hover["background-color"] }} !important;
+      color: {{ hover["color"] }};
+      border-color: {{ hover["border-color"] }};
+    }
+  {% endif %}
+{% endmacro %}
+
+
+
+{{ build_button("form input[type='submit']", theme.forms.submit_button_style) }}
+
+  {% for key, val in button_styles.items() %}
+    {% set style = key.split('-', 2)[0] %}
+    {% set options = val %}
+    {% if key.split('-', 2)[1] == 'hover' %}
+      .button.button--{{ style }}:hover,
+      .hs-button.button--{{ style }}:hover,
+      .cta_button.button--{{ style }}:hover {
+        {% for property, value in options.items() %}
+          {{ property }}: {{ value }};
+        {% endfor %}
+      }
+      .button.button--{{ style }}_outline:hover,
+      .hs-button.button--{{ style }}_outline:hover,
+      .cta_button.button--{{ style }}_outline:hover {
+        {% for property, value in options.items() %}
+          {% if property == 'border-color' %}
+            border-color: {{ value }};
+            background-color: {{ value }} !important;
+          {% endif %}
+          {% if property == 'color' %}
+            color: {{ value }};
+          {% endif %}
+        {% endfor %} 
+      }
+    {% else %}
+      .button.button--{{ style }},
+      .hs-button.button--{{ style }},
+      .cta_button.button--{{ style }} {
+        {% for property, value in options.items() %}
+          {{ property }}: {{ value }};
+        {% endfor %}
+      }
+      .button.button--{{ style }}_outline,
+      .hs-button.button--{{ style }}_outline,
+      .cta_button.button--{{ style }}_outline {
+          background-color: transparent !important;
+          {% for property, value in options.items() %}
+            {% if property == 'background-color' %}
+              color: {{ value }};
+              border-color: {{ value }};
+            {% endif %}
+          {% endfor %}
+      }
+    {% endif %}
+  {% endfor %}
+
+{% set section_styles = {
+  'primary': {
+    'background': theme.section_styles.primary_section.background_color.color,
+    'headings': theme.section_styles.primary_section.headings_color.color,
+    'content': theme.section_styles.primary_section.text_color.color,
+    'links': theme.section_styles.primary_section.link_color.color,
+    'accent': theme.section_styles.primary_section.accent_color.color,
+    'primary_button': theme.section_styles.primary_section.primary_button,
+    'secondary_button': theme.section_styles.primary_section.secondary_button,
+  },
+  'secondary': {
+    'background': theme.section_styles.secondary_section.background_color.color,
+    'headings': theme.section_styles.secondary_section.headings_color.color,
+    'content': theme.section_styles.secondary_section.text_color.color,
+    'links': theme.section_styles.secondary_section.link_color.color,
+    'accent': theme.section_styles.secondary_section.accent_color.color,
+    'primary_button': theme.section_styles.secondary_section.primary_button,
+    'secondary_button': theme.section_styles.secondary_section.secondary_button,
+  },
+  'tertiary': {
+    'background': theme.section_styles.tertiary_section.background_color.color,
+    'headings': theme.section_styles.tertiary_section.headings_color.color,
+    'content': theme.section_styles.tertiary_section.text_color.color,
+    'links': theme.section_styles.tertiary_section.link_color.color,
+    'accent': theme.section_styles.tertiary_section.accent_color.color,
+    'primary_button': theme.section_styles.tertiary_section.primary_button,
+    'secondary_button': theme.section_styles.tertiary_section.secondary_button,
+  },
+  'light': {
+    'background': theme.section_styles.light_section.background_color.color,
+    'headings': theme.section_styles.light_section.headings_color.color,
+    'content': theme.section_styles.light_section.text_color.color,
+    'links': theme.section_styles.light_section.link_color.color,
+    'accent': theme.section_styles.light_section.accent_color.color,
+    'primary_button': theme.section_styles.light_section.primary_button,
+    'secondary_button': theme.section_styles.light_section.secondary_button,
+  },
+  'dark': {
+    'background': theme.section_styles.dark_section.background_color.color,
+    'headings': theme.section_styles.dark_section.headings_color.color,
+    'content': theme.section_styles.dark_section.text_color.color,
+    'links': theme.section_styles.dark_section.link_color.color,
+    'accent': theme.section_styles.dark_section.accent_color.color,
+    'primary_button': theme.section_styles.dark_section.primary_button,
+    'secondary_button': theme.section_styles.dark_section.secondary_button,
+  }
+} %}
+
+{% for style, options in section_styles.items() %}
+  {% for option, value in options.items() %}
+    {% if option == "background" %}.section--{{ style }} .scope__background, .section--{{ style }} { background-color: {{ value }}; }{% endif %}
+    {% if option == "accent" %}.section--{{ style }} .scope__small-title { color: {{ value }}; } {% endif %}
+    {% if option == "headings" %}.section--{{ style }} h1, .section--{{ style }} h2, .section--{{ style }} h3, .section--{{ style }} h4, .section--{{ style }} h5 { color: {{ value }}; }{% endif %}
+    {% if option == "content" %}.section--{{ style }} p, .section--{{ style }} li, .section--{{ style }} p *, .section--{{ style }} div { color: {{ value }}; }{% endif %}
+    {% if option == "links" %}.section--{{ style }} a:not([class*="button"]) { color: {{ value }}; }{% endif %}
+    {% if option|split("_")|last == "button" %}
+      {{ get_button(".section--" + style, option|split("_")|first, value) }}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+{% for style, options in section_styles.items() %}
+  {% for option, value in options.items() %}
+    {% if option == "background" %}
+      .blocks--{{ style }}:not(.blocks--hover--colorize) *[class$="__block"], 
+      .blocks--{{ style }} div[class$="__block-front"]:before, 
+      .blocks--{{ style }}:not(.blocks--hover) div[class$="__block-wrap"] > *, 
+      .blocks--{{ style }} div[class$="__block-wrap"] { 
+        background-color: {{ value }}; 
+      }
+    {% endif %}
+    {% if option == "headings" %}.blocks--{{ style }} h3 { color: {{ value }}; } {% endif %}
+    {% if option == "content" %}.blocks--{{ style }} > * p, .blocks--{{ style }} > *, .blocks--{{ style }} > * span { color: {{ value }}; }{% endif %}
+    {% if option == "links" %}.blocks--{{ style }} a:not([class*="button"]) { color: {{ value }}; }{% endif %}
+    {% if option|split("_")|last == "button" %}
+      {{ get_button(".blocks--" + style, option|split("_")|first, value) }}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+{% macro boxShadow(value) -%} -webkit-box-shadow: {{ value }};-moz-box-shadow: {{ value }};-o-box-shadow: {{ value }};-ms-box-shadow: {{ value }};box-shadow: {{ value }};{%- endmacro %}
+
+.button--gradient--primary .button--primary {
+  background: var(--purple-gradient) !important;
+}
+
+.button--gradient--primary .button--primary:hover {
+  {{ boxShadow("0px 0px 15px rgb(0 0 0 / 30%)") }}
+}
+
+.footer__container {
+  padding: 0 !important; 
+}
+
+:root {
+  {% for style, properties in button_styles.items() %}
+    {% for property, value in properties.items() %}
+      --button_{{ style }}_{{ property }}: {{ value }};
+    {% endfor %}
+  {% endfor %}
+}

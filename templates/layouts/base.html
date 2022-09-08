@@ -1,0 +1,67 @@
+<!--
+  templateType: none
+-->
+
+<!doctype html>
+<html lang="{{ html_lang }}" {{ html_lang_dir }} style="scroll-behavior: smooth;">
+  <head>
+    <meta charset="utf-8">
+    {% if page_meta.html_title %}<title>{{ page_meta.html_title }}</title>{% endif %}
+    {% if site_settings.favicon_src %}<link rel="shortcut icon" href="{{ site_settings.favicon_src }}" />{% endif %}
+    <meta name="description" content="{{ page_meta.meta_description }}">
+    
+    {# SITE SPEED OPTIMIZATION #}
+    {% require_js %}
+      <script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-rc.2/lazyload.js"></script>
+      <script>
+        var critical_css = Array.from(document.styleSheets).filter((sheet) => { try { sheet.cssRules; return true; } catch (err) { console.log(`Due to CORS issues, this script can't access "${sheet.href}"`); return false; }}).map((sheet) => Array.from(sheet.cssRules).map((rule) => rule.type === rule.FONT_FACE_RULE ? rule.cssText : rule.type === rule.STYLE_RULE ? Array.from(document.querySelectorAll(rule.selectorText)).some((node) => node.getBoundingClientRect().top < window.innerHeight && window.getComputedStyle(node).display !== 'none') ? rule.cssText : null : rule.type === rule.MEDIA_RULE ? `@media ${rule.conditionText} {${Array.from(rule.cssRules).map((mediaRule) => mediaRule.type === mediaRule.FONT_FACE_RULE ? mediaRule.cssText : mediaRule.type === mediaRule.STYLE_RULE ? Array.from(document.querySelectorAll(mediaRule.selectorText)).some((node) => node.getBoundingClientRect().top < window.innerHeight && window.getComputedStyle(node).display !== 'none') ? mediaRule.cssText : null : null).filter((mediaRule) => mediaRule != null).join(' ')}}` : null)).flat().filter((rule) => rule != null && !new RegExp(/^@media.*{}$/).test(rule)).join(' ');
+        var head = document.head || document.getElementsByTagName('head')[0],
+            style = document.createElement('style');
+        head.appendChild(style);
+        style.type = 'text/css';
+        if (style.styleSheet){ style.styleSheet.cssText = critical_css; } else { style.appendChild(document.createTextNode(critical_css)); }
+        let images = document.querySelectorAll("img");
+        lazyload(images);
+      </script>
+    {% end_require_js %}
+    
+    {{ standard_header_includes }}
+    
+    <body class="{{ theme.theme_options.color_scheme }}">
+      <div class="body-wrapper {{ builtin_body_classes }}">
+
+        {% block header %}
+          {# no header #}
+        {% endblock header %}
+
+        <div class="body-wrapper--inner">
+
+          {% block body %}
+          {% endblock body %}
+
+        </div>
+        
+          {% block footer %}
+            {% global_partial path='../partials/footer.html' %}
+          {% endblock footer %}
+        
+      </div>
+      
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />  </head>
+      {{ require_css("https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css") }}
+      {{ require_css(get_asset_url("../../css/main.css")) }}
+      {% if template_css %}
+        {{ require_css(get_asset_url(template_css)) }}
+      {% endif %}
+      {{ require_css(get_asset_url("../../css/theme-overrides.css")) }}
+      {{ require_js("https://code.jquery.com/jquery-3.6.0.min.js", "footer") }}
+      {{ require_js("https://play.vidyard.com/embed/v4.js", "footer", "defer") }} 
+      {{ require_js("https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js") }}
+      {{ require_js("https://unpkg.com/scrollreveal@4", "footer") }}
+      {{ require_js("https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js", "footer", "defer") }}
+      {{ require_js("https://cdn.jsdelivr.net/npm/simple-parallax-js@5.5.1/dist/simpleParallax.min.js", "footer") }}
+      {{ require_js(get_asset_url('../../js/main.js'), "footer") }}
+      {{ standard_footer_includes }}
+
+  </body>
+</html>

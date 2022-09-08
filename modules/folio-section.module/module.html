@@ -1,0 +1,665 @@
+{% if module.module_options.enable_module == "true" %}
+
+{# MACROS #}
+
+{% macro transition(value) -%} 
+-webkit-transition: {{ value }};
+-moz-transition: {{ value }};
+-o-transition: {{ value }};
+-ms-transition: {{ value }};
+transition: {{ value }};
+{%- endmacro %} 
+
+{% macro borderRadius(value) -%} 
+-webkit-border-radius: {{ value }};
+-moz-border-radius: {{ value }};
+-o-border-radius: {{ value }};
+-ms-border-radius: {{ value }};
+border-radius: {{ value }};
+{%- endmacro %}
+
+{% macro boxShadow(value) -%} 
+-webkit-box-shadow: {{ value }};
+-moz-box-shadow: {{ value }};
+-o-box-shadow: {{ value }};
+-ms-box-shadow: {{ value }};
+box-shadow: {{ value }};
+{%- endmacro %}
+
+{% macro textShadow(value) -%} 
+-webkit-text-shadow: {{ value }};
+-moz-text-shadow: {{ value }};
+-o-text-shadow: {{ value }};
+-ms-text-shadow: {{ value }};
+text-shadow: {{ value }};
+{%- endmacro %}
+
+{% macro transform(value) -%} 
+-webkit-transform: {{ value }};
+-moz-transform: {{ value }};
+-o-transform: {{ value }};
+-ms-transform: {{ value }};
+transform: {{ value }};
+{%- endmacro %}
+
+{# MODULE STYLES #}
+{% set layout_options = module.style.module_styles.layout_options %}
+{% set module_background_styles = module.style.module_styles.background_options.background %}
+{% set module_overlay_styles = module.style.module_styles.background_options.overlay %}
+{% set module_border_styles = module.style.module_styles.border_options %}
+{% set module_spacing_styles = module.style.module_styles.spacing_options %}
+{% set module_alignment_styles = module.style.module_styles.alignment_options %}
+{% set module_font_styles = module.style.module_styles.font_options %}
+
+{# FORM STYLES #}
+{% set form_background_styles = module.style.form_styles.background_options.background %}
+{% set form_overlay_styles = module.style.form_styles.background_options.overlay %}
+{% set form_border_styles = module.style.form_styles.border_options %}
+{% set form_spacing_styles = module.style.form_styles.spacing_options %}
+{% set form_alignment_styles = module.style.form_styles.alignment_options %}
+{% set form_font_styles = module.style.form_styles.font_options %}
+
+{# BLOCK STYLES #}
+{% set block_type = module.style.block_styles.select_block_type %}
+{% set block_style = module.style.block_styles.select_block_style %}
+{% set block_orientation = module.style.block_styles.select_block_orientation %}
+{% set block_hover_style = module.style.block_styles.hover_block_style %}
+{% set block_media_hover_style = module.style.block_styles.select_media_hover_block_style %}
+{% set block_icon_hover_style = module.style.block_styles.select_icon_hover_block_style %}
+{% set block_background_styles = module.style.block_styles.background_options.background %}
+{% set block_overlay_styles = module.style.block_styles.background_options.overlay %}
+{% set block_border_styles = module.style.block_styles.border_options %}
+{% set block_spacing_styles = module.style.block_styles.spacing_options %}
+{% set block_alignment_styles = module.style.block_styles.alignment_options %}
+{% set block_font_styles = module.style.block_styles.font_options %}
+{% set block_layout_styles = module.style.block_styles.block_layout_options %}
+{% set block_layout_type = module.style.block_styles.block_layout_options.select_layout_style %}
+{% set block_options = module.style.block_styles.advanced_block_options %}
+{% set video_added = [] %}
+
+{# BUTTON STYLES #}
+{% set primary_button = module.style.button_styles.primary_button %}
+{% set secondary_button = module.style.button_styles.secondary_button %}
+{% set submit_button = module.style.form_styles.submit_button %}
+{% set custom_primary_button = module.style.button_styles.custom_primary_button %}
+{% set custom_secondary_button = module.style.button_styles.custom_secondary_button %}
+{% set custom_submit_button = submit_button.custom_submit_button %}
+
+{# CREATE ARRAYS #}
+{% set folio_classes = [] %}
+{% set folio_styles = [] %}
+{% set container_styles = [] %}
+{% set row_styles = [] %}
+{% set col_styles = [] %}
+{% set parallax_options = [] %}
+{% set headings_classes = [] %}
+{% set headings_options = [] %}
+{% set contents_classes = [] %}
+{% set contents_options = [] %}
+{% set featured_classes = [] %}
+{% set featured_options = [] %}
+{% set animation_section_classes = [] %}
+{% set animation_section_options = [] %}
+
+{# INLINE BUILDER #}
+{% set section_id = module.advanced.section_id if module.advanced.section_id else name %}
+{% if module.advanced.custom_classes %}{% do folio_classes.append(module.advanced.custom_classes) %}{% endif %}
+{% if layout_options.featured_placement %}{% do folio_classes.append("section-layout--" ~ layout_options.featured_placement) %}{% endif %}
+{% if layout_options.reverse_mobile_order == "true" %}{% do folio_classes.append("mobile-reverse") %}{% endif %}
+{% if layout_options.full_height %}
+  {% set offset = module_spacing_styles.spacing.padding.top.value + module_spacing_styles.spacing.padding.bottom.value %}
+  {% do container_styles.append("display: flex; min-height:calc(100vh - " + offset + "px);") %}
+  {% do folio_classes.append("section--full-height") %}
+{% endif %}
+{% if module_background_styles.parallax != "none" %}{% do folio_classes.append("section-parallax--" ~ module_background_styles.parallax) %}{% do parallax_options.append("data-depth='" ~ module_background_styles.parallax_strength ~ "'") %}{% endif %}
+{% if module_font_styles.scale_header == "true" %}{% do folio_classes.append("scale-text") %}{% endif %}
+{% if layout_options.full_width != "true" %}{% do container_styles.append("max-width:" + layout_options.max_container_width + "px; margin-left: auto; margin-right: auto;") %}{% endif %}
+{% if module.module_options.section_style != "default" %}{% do folio_classes.append("section--" ~ module.module_options.section_style) %}{% endif %}
+{% if module_font_styles.scale_header == "true" %}{% do headings_classes.append("scale-text") %}{% endif %}
+{% if module_alignment_styles %}
+  {% unless module.featured_content.show_advanced_image_options == "true" && module.featured_content.advanced_image_options.choose_layout == "split" %}
+    {% if module_alignment_styles.alignment.vertical_align == "MIDDLE" %}{% do row_styles.append("align-items: center;") %}{% do container_styles.append("align-items: center;") %}{% elif module_alignment_styles.alignment.vertical_align == "TOP" %}{% do row_styles.append("align-items: flex-start;") %}{% do container_styles.append("align-items: flex-start;") %}{% elif module_alignment_styles.alignment.vertical_align == "BOTTOM" %}{% do row_styles.append("align-items: flex-end;") %}{% do container_styles.append("align-items: flex-end;") %}{% endif %}
+    {% if module_alignment_styles.alignment.horizontal_align == "CENTER" %}{% do row_styles.append("justify-content: center;") %}{% else %}{% do row_styles.append("justify-content: space-between;") %}{% endif %}
+  {% endunless %}
+{% endif %}
+{% if module.featured_content.show_advanced_image_options == "true" && module.featured_content.advanced_image_options.choose_layout == "split" %}
+  {% do featured_options.append("style='background-image:url(" + module.featured_content.featured_image.src + "); background-size: cover; background-position: center;'") %}
+  {% do container_styles.append("padding:0;") %}
+{% endif %}
+
+{# ANIMATION BUILDER #}
+{% set standard_animations = {
+  "fadeIn": "data-duration='1500' data-origin='center' data-distance='0px' data-delay='.5' data-opacity='0' data-scale='1'",
+  "slideInLeft": "data-duration='1500' data-origin='left' data-distance='150px' data-delay='.5' data-opacity='0' data-scale='1'",
+  "slideInRight": "data-duration='1500' data-origin='right' data-distance='150px' data-delay='.5' data-opacity='0' data-scale='1'",
+  "slideInTop": "data-duration='1500' data-origin='top' data-distance='150px' data-delay='.5' data-opacity='0' data-scale='1'",
+  "slideInBottom": "data-duration='1500' data-origin='bottom' data-distance='150px' data-delay='.5' data-opacity='0' data-scale='1'",
+  "zoomIn": "data-duration='1500' data-origin='center' data-distance='0px' data-delay='.5' data-opacity='0' data-scale='0'"
+} %}
+{% macro build_animations(data) %}
+  {% if data.animations %}
+    {% for animation in data.animations %}
+      {% set style = animation.animation_style %}
+      {% if animation.animation_target == "headings" %}
+        {% do headings_classes.append("animate") %}
+        {% if animation.animation_style == "custom" %}
+          {% do headings_options.append("data-duration='" ~ animation.custom_animation_options.duration ~ "' data-origin='" ~ animation.custom_animation_options.origin ~ "' data-distance='" ~ animation.custom_animation_options.distance ~ "px' data-delay='" ~ animation.custom_animation_options.delay ~ "' data-opacity='" ~ animation.custom_animation_options.opacity ~ "' data-scale='" ~ animation.custom_animation_options.scale ~ "'") %} 
+        {% else %}{% do headings_options.append(standard_animations[style]) %}{% endif %} 
+      {% elif animation.animation_target == "contents" %}
+        {% do contents_classes.append("animate") %}
+        {% if animation.animation_style == "custom" %}
+          {% do contents_options.append("data-duration='" ~ animation.custom_animation_options.duration ~ "' data-origin='" ~ animation.custom_animation_options.origin ~ "' data-distance='" ~ animation.custom_animation_options.distance ~ "px' data-delay='" ~ animation.custom_animation_options.delay ~ "' data-opacity='" ~ animation.custom_animation_options.opacity ~ "' data-scale='" ~ animation.custom_animation_options.scale ~ "'") %} 
+        {% else %}{% do contents_options.append(standard_animations[style]) %}{% endif %}
+      {% elif animation.animation_target == "featured_content" %}
+        {% do featured_classes.append("animate") %}
+        {% if module.featured_content.featured_content == "blocks" %}
+          {% do featured_classes.append("stagger-animation") %}
+        {% endif %}
+        {% if animation.animation_style == "custom" %}
+          {% do featured_options.append("data-duration='" ~ animation.custom_animation_options.duration ~ "' data-origin='" ~ animation.custom_animation_options.origin ~ "' data-distance='" ~ animation.custom_animation_options.distance ~ "px' data-delay='" ~ animation.custom_animation_options.delay ~ "' data-opacity='" ~ animation.custom_animation_options.opacity ~ "' data-scale='" ~ animation.custom_animation_options.scale ~ "'") %} 
+        {% else %}{% do featured_options.append(standard_animations[style]) %}{% endif %}
+      {% elif animation.animation_target == "all" %}
+        {% do animation_section_classes.append("animate") %}
+        {% if animation.animation_style == "custom" %}
+          {% do animation_section_options.append("data-duration='" ~ animation.custom_animation_options.duration ~ "' data-origin='" ~ animation.custom_animation_options.origin ~ "' data-distance='" ~ animation.custom_animation_options.distance ~ "px' data-delay='" ~ animation.custom_animation_options.delay ~ "' data-opacity='" ~ animation.custom_animation_options.opacity ~ "' data-scale='" ~ animation.custom_animation_options.scale ~ "'") %} 
+        {% else %}{% do animation_section_options.append(standard_animations[style]) %}{% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endmacro %}
+{{ build_animations(module.animation_options) }}
+
+{% macro background_video() %}
+  <div class="folio__video-bg">
+    {% if module.background_video.video_link is string_containing "you" %}
+      <iframe width="1020" height="630" src="https://www.youtube.com/embed/{{ module.background_video.video_link|split("v=")|last }}?playlist={{ module.background_video.video_link|split("v=")|last }}&loop=1&playsinline=1&controls=0&autohide=1&mute=1&autoplay=1&fs=0" title="{{ module.content.title }}" allowfullscreen></iframe>
+    {% elif module.background_video.video_link is string_containing "vimeo" %}
+      <iframe src='{{ module.background_video.video_link }}background=1' width='1020' height='630' frameborder='0' webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+    {% endif %}
+    {% if module.background_video.use_file == "true" %}
+      {% if module.background_video.videoplayer.player_id %}
+        <div id="vidyard_video" class="video-bg__vidyard">
+          {% if module.background_video.videoplayer.player_id %}
+          {% set max_width = module.background_video.videoplayer.size_type == 'auto_custom_max' ? module.background_video.videoplayer.max_width : module.background_video.videoplayer.width %}
+          {% set max_height = module.background_video.videoplayer.size_type == 'auto_custom_max' ? module.background_video.videoplayer.max_height : module.background_video.videoplayer.height %}
+          {% video_player "embed_player"
+                    player_id={{ module.background_video.videoplayer.player_id }}
+                    type={{ module.background_video.videoplayer.player_type || 'scriptV4' }}
+                    full_width={{ module.background_video.videoplayer.size_type == 'auto_full_width' }},
+                    conversion_asset={{ module.background_video.videoplayer.conversion_asset|tojson|safe }}
+                  %}
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endif %}
+</div> 
+{% endmacro %}
+
+{% macro call_to_action(item) %}
+    <div class="button-wrap">
+      {% if item.link_type == "external" %}
+        {% set href = item.link.url.href %}
+        {% if item.link.url.type is equalto "EMAIL_ADDRESS" %}
+          {% set href = "mailto:" + href %}
+        {% endif %}
+        {% set rel = [] %}
+        {% if item.link.no_follow %}
+          {% do rel.append("nofollow") %}
+        {% endif %}
+        {% if item.link.open_in_new_tab %}
+          {% do rel.append("noopener") %}
+        {% endif %}
+      {% elif item.link_type == "anchor" %}
+        {% set href = "#" ~ item.anchor_name %}
+      {% else %}
+        {% set href = "#" %}
+      {% endif %}
+      {% set button_style = item.button_style %}
+      {% if button_style == "primary" && custom_primary_button == "true" && primary_button.button_preset != "custom" %}{% set button_style = primary_button.button_preset %}{% endif %}
+      {% if button_style == "secondary" && custom_secondary_button == "true" && secondary_button.button_preset != "custom" %}{% set button_style = secondary_button.button_preset %}{% endif %}
+      <a href="{{ href }}" class="hs-button button button--{{ button_style }} {% if item.cta_type == "form_modal"%}open-form{% endif %}" 
+         {% if item.link.open_in_new_tab %}target="_blank"{% endif %}
+         {% if rel %}rel="{{ rel|join(" ") }}"{% endif %}
+         >
+        {{ item.button_text }}
+      </a>
+    </div>
+{% endmacro %}
+
+{% macro folio_block(item) %}
+  {% if item.advanced_block_options.add_link == "true" %}
+  {% set href = item.advanced_block_options.block_link.url.href %}
+  {% if item.advanced_block_options.block_link.url.type is equalto "EMAIL_ADDRESS" %}
+  {% set href = "mailto:" + href %}
+  {% endif %}
+  {% set rel = [] %}
+  {% if item.advanced_block_options.block_link.no_follow %}
+  {% do rel.append("nofollow") %}
+  {% endif %}
+  {% if item.advanced_block_options.block_link.open_in_new_tab %}
+  {% do rel.append("noopener") %}
+  {% endif %}
+  <a href="{{ href }}" {% if item.advanced_block_options.block_link.open_in_new_tab %}target="_blank"{% endif %} {% if rel %}rel="{{ rel|join(" ") }}"{% endif %} class="folio__block">{% else %}
+    <div class="folio__block">{% endif %}
+      {% if item.image.src %}
+      <div class="folio__block-image" {% if block_type != "icon" %}style="background-image:url({{ item.image.src }});"{% endif %}>
+        {% if item.image.src && block_type == "icon" %}
+        {% set sizeAttrs = 'width="{{ item.image.width }}" height="{{ item.image.height }}"' %}
+        {% if item.image.size_type == 'auto' %}
+        {% set sizeAttrs = 'style="max-width: 100%; height: auto;"' %}
+        {% elif item.image.size_type == 'auto_custom_max' %}
+        {% set sizeAttrs = 'width="{{ item.image.max_width }}" height="{{ item.image.max_height }}" style="max-width: 100%; height: auto;"' %}
+        {% endif %}
+        {% set loadingAttr = item.image.loading != 'disabled' ? 'loading="{{ item.image.loading }}"' : '' %}
+        <img data-src="{{ item.image.src }}" alt="{{ item.image.alt }}" {{ loadingAttr }} {{ sizeAttrs }}>
+        {% endif %}
+        {% if item.advanced_block_options.add_video == "true" %}{% do video_added.append("true") %}<a href="{{ item.advanced_block_options.video_link }}" class="block__video{% if block_options.video_link is string_containing "you" || block_options.video_link is string_containing "vimeo" %} block__video--default{% elif block_options.video_link is string_containing "wistia" %} block__video--wistia{% endif %}"><i aria-hidden="true" class="fas fa-play-circle"></i></a>{% endif %}
+      </div>
+      {% endif %}
+      {% if item.content || item.title || item.cta != [] %}
+      <div class="folio__block-wrap">
+        {% if block_type == "hover" && block_hover_style is string_containing "flip" %}<div class="folio__block-front" style="background-image:url({{ item.image.src }});">{% endif %}
+        {% if item.title %}<div class="folio__block-title"><h3>{{ item.title }}</h3></div>{% endif %}
+        {% if block_type == "hover" && block_hover_style is string_containing "flip" %}</div><div class="folio__block-back">{% endif %}
+        {% if item.content %}<div class="folio__block-content">{{ item.content }}{% endif %}
+        {% if item.cta %}
+        <div class="folio__block-cta">
+          {% for cta_obj in item.cta %}
+            {% if cta_obj.button_text %}
+              {{ call_to_action(cta_obj) }}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% if item.content %}</div>{% endif %}
+        {% if block_type == "hover" && block_hover_style is string_containing "flip" %}</div>{% endif %}
+        </div>
+      </div>
+    {% endif %}
+  {% if item.advanced_block_options.add_link == "true" %}</a>{% else %}</div>{% endif %}
+{% endmacro %}
+
+{# MODULE CONTENT #}
+<div id="{{ section_id }}" class="{{ name }}__folio folio {{ folio_classes|join(" ") if folio_classes }} {{ animation_section_classes|join(" ") if animation_section_classes }}" {{ animation_section_options|join(" ") if animation_section_options }}>
+  <div {% if module_background_styles.parallax == "js" %}id="parallax-wrap"{% endif %} class="folio__background" {{ parallax_options|join(" ") if parallax_options }}>{% if module_background_styles.parallax == "js" %}<img class="parallax-background" data-src="{{ module_background_styles.parallax_image.src }}" width="{{ module_background_styles.parallax_image.width }}" height="{{ module_background_styles.parallax_image.height }}" />{% endif %}</div>
+  {% if module_background_styles.background_type == "video" %}
+    {{ background_video() }}
+  {% endif %}
+  {% if module_background_styles.add_overlay == "true" %}<div class="folio__overlay"></div>{% endif %}
+  <div class="folio__container">
+    <div class="folio__row">
+      <div class="folio__col col--content">
+        <div class="folio__wrap wrap--content">
+          {% if module.content.title %}<div class="folio__heading {{ headings_classes|join(" ") if headings_classes }}" {{ headings_options|join(" ") if headings_options }}>
+          {% if module.content.add_small_title %}<div class="folio__small-title"><h5>{{ module.content.small_title }}</h5></div>{% endif %}
+            <{{ module_font_styles.header_tag }}>{{ module.content.title }}</{{ module_font_styles.header_tag }}></div>
+          {% endif %}
+          {% if module.content.content %}<div class="folio__content {{ contents_classes|join(" ") if contents_classes }}" {{ contents_options|join(" ") if contents_options }}>{{ module.content.content }}</div>{% endif %}
+          {% if module.content.cta %}
+            <div class="folio__cta">
+              {% for cta in module.content.cta %}
+                {{ call_to_action(cta) }}
+              {% endfor %}
+            </div>
+          {% endif %}
+          </div>
+        </div>
+        {% if module.featured_content.featured_content != "none" %}
+          <div class="folio__col col--featured featured--{{ module.featured_content.featured_content }} {{ featured_classes|join(" ") if featured_classes }}" {{ featured_options|join(" ") if featured_options }}>
+            <div class="folio__wrap wrap--featured">
+              {% if module.featured_content.featured_content == "image" %}
+                {% if module.featured_content.featured_image.src %}
+                  {% set sizeAttrs = 'width="{{ module.featured_content.featured_image.width }}" height="{{ module.featured_content.featured_image.height }}"' %}
+                  {% if module.featured_content.featured_image.size_type == 'auto' %}
+                    {% set sizeAttrs = 'style="max-width: 100%; height: auto;"' %}
+                  {% elif module.featured_content.featured_image.size_type == 'auto_custom_max' %}
+                    {% set sizeAttrs = 'width="{{ module.featured_content.featured_image.max_width }}" height="{{ module.featured_content.featured_image.max_height }}" style="max-width: 100%; height: auto;"' %}
+                  {% endif %}
+                   {% set loadingAttr = module.featured_content.featured_image.loading != 'disabled' ? 'loading="{{ module.featured_content.featured_image.loading }}"' : '' %}
+                  <img {% if module.featured_content.advanced_image_options.disable_lazy_load == "true" %}src{% else %}data-src{% endif %}="{{ module.featured_content.featured_image.src }}" alt="{{ module.featured_content.featured_image.alt }}" {{ sizeAttrs }}>
+                {% endif %}              
+              {% elif module.featured_content.featured_content == "form" %}
+                <div class="folio__form">
+                  {% form
+                        form_to_use="{{ module.featured_content.featured_form.form_id }}"
+                        response_response_type="{{ module.featured_content.featured_form.response_type }}"
+                        response_message="{{ module.featured_content.featured_form.message }}"
+                        response_redirect_id="{{ module.featured_content.featured_form.redirect_id }}"
+                        response_redirect_url="{{module.featured_content.featured_form.redirect_url}}"
+                        gotowebinar_webinar_key="{{ module.featured_content.featured_form.gotowebinar_webinar_key }}"
+                  %}
+                </div>
+              {% elif module.featured_content.featured_content == "cta" %}{% cta guid="{{ module.featured_content.featured_cta }}" %}
+              {% elif module.featured_content.featured_content == "blocks" %}
+                <div class="folio__blocks blocks--{{ block_type }} blocks--{{ block_style }} style--{{ block_layout_type }} {% if block_media_hover_style %} blocks--hover--{{ block_media_hover_style }} {% endif %}{% if block_layout_type == "equal" %} equal-height{% if block_layout_styles.fix_button == "true" %} fix-button{% endif %}{% endif %} {% if block_icon_hover_style %} blocks--hover--{{ block_icon_hover_style }} {% endif %}{% if block_type != "hover" %} blocks--{{ block_type }}--{{ block_orientation }}{% else %}blocks--{{ block_type }}--{{ block_hover_style }}{% endif %}">
+                  {% for item in module.blocks %}
+                    {{ folio_block(item) }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{# MODULE STYLES #}
+{% require_css %}
+  <style>
+    .{{ name }}__folio {
+      {% if module.featured_content.show_advanced_image_options == "true" && module.featured_content.advanced_image_options.choose_layout == "split" %}
+        padding: 0;
+      {% else %}
+        {{ module_spacing_styles.spacing.css|trim }}
+      {% endif %}
+      {{ module_alignment_styles.text_alignment.css|trim }};
+      {{ module_alignment_styles.alignment.css|trim }}
+      {{ folio_styles|join(" ") }}
+      {% if module.featured_content.featured_content == "image" && module.featured_content.advanced_image_options.allow_overflow %}overflow-x:clip; overflow-y:visible; z-index: 99;{% else %}overflow:hidden; z-index: 1;{% endif %}
+    }
+    {% if module.content.add_small_title %}.{{ name }}__folio div[class$='__small-title'] h5 { margin-bottom: 1.5em !important; text-transform: uppercase; font-size: 18px; letter-spacing: 1px; margin-bottom: 5px; }{% endif %}
+    .{{ name }}__folio div[class$='__container'] { {{ container_styles|join(" ") }} }
+    .{{ name }}__folio div[class$='__row'] { {{ row_styles|join(" ") }} }
+    .{{ name }}__folio div[class$='__col'] { {{ col_styles|join(" ") }} }
+    @media screen and (max-width: {{ layout_options.max_container_width }}px) { 
+      .{{ name }}__folio .folio__col { padding: 0 15px; }
+    }
+    .{{ name }}__folio div[class$='__background'] {
+      {% if module_background_styles.background_type == "color" %}background-color: {{ module_background_styles.background_color.color }};{% endif %}
+      {% if module_background_styles.background_type == "gradient" %}background: {{ module_background_styles.background_gradient.css }};{% elif module_background_styles.background_type == "image" && module_background_styles.parallax != "js" %}{{ module_background_styles.background_image.css }}{% else %}background-image:url({{ module_background_styles.background_image.src }});{% endif %}
+      {% if module_border_styles.border %}{{ module_border_styles.border.css }}{% endif %}
+      {% if module_border_styles.border_radius %}{{ borderRadius(module_border_styles.border_radius + "px") }}{% endif %}
+    } 
+    {% if module_background_styles.add_overlay == "true" %}
+      .{{ name }}__folio div[class$='__overlay'] {
+        {% if module_overlay_styles.background_color.color %}background-color: {{ module_overlay_styles.background_color.css }};{% endif %}
+        {% if module_overlay_styles.background_type == "gradient" %}background: {{ module_overlay_styles.background_gradient.css }}{% elif module_overlay_styles.background_type == "image" %} {{ module_overlay_styles.background_image.css }}{% endif %}
+      } 
+    {% endif %}
+    {% if module.featured_content.featured_content == "image" && module.featured_content.show_advanced_image_options == "true" %}
+      {% if module.featured_content.advanced_image_options.choose_layout == "default" %}
+        {% set image_transform = [] %}
+        {% set image_flip_transform = [] %}
+        {% if module.featured_content.advanced_image_options.x_offset %}{% do image_transform.append("translateX(" + module.featured_content.advanced_image_options.x_offset + "%)") %}{% endif %}
+        {% if module.featured_content.advanced_image_options.y_offset %}{% do image_transform.append("translateY(" + module.featured_content.advanced_image_options.y_offset + "%)") %}{% endif %}
+        {% set flip_transform = image_transform|union(["rotateY(180deg)"]) %}
+        .{{ name }}__folio .folio__col { position:relative; }
+        @media screen and (min-width:1120px) {
+          .{{ name }}__folio .wrap--featured { position: absolute; height: 0; }
+          .{{ name }}__folio .wrap--featured img { {{ transform(image_transform|join("")) }} max-width: unset !important; }
+          .{{ name }}__folio.flip-image .wrap--featured img { {{ transform(flip_transform|join("")) }} max-width: unset !important; }
+          .{{ name }}__folio .wrap--featured { 
+            {% if module.featured_content.advanced_image_options.x_offset %}--x-offset:{{ module.featured_content.advanced_image_options.x_offset }}%;{% endif %}  
+            {% if module.featured_content.advanced_image_options.y_offset %}--y-offset:{{ module.featured_content.advanced_image_options.y_offset }}%;{% endif %}  
+          }
+        }
+      {% else %}
+        .{{ name }}__folio .folio__col { position:relative; }
+        .{{ name }}__folio .col--content { align-self:center; }
+        .{{ name }}__folio .wrap--content { {{ module_spacing_styles.spacing.css|trim }} }
+        @media screen and (min-width:768px) {
+          .{{ name }}__folio .wrap--featured { position: absolute; background-size:cover; background-repeat:norepeat; background-position: center; }
+          .{{ name }}__folio .wrap--featured img { opacity:0; }
+          .{{ name }}__folio .col--featured { padding: 0; aspect-ratio: {{ module.featured_content.advanced_image_options.image_aspect_ratio }}; width: {{ block_layout_options.featured_column_width }}%;  }
+        }
+        .{{ name }}__folio .col--featured { padding: 0; }
+      {% endif %}
+    {% endif %}
+    {% if module_font_styles.heading_font %}.{{ name }}__folio h1, .{{ name }}__folio h2, .{{ name }}__folio h3, .{{ name }}__folio h4 { {{ module_font_styles.heading_font.css }} } {% endif %}
+    {% if module_font_styles.content_font %}.{{ name }}__folio .folio__content, .{{ name }}__folio .folio__content p, .{{ name }}__folio .folio__content li, .{{ name }}__folio .folio__content div { {{ module_font_styles.content_font.css }} } {% endif %}
+    {% if module_font_styles.small_title_font %}.{{ name }}__folio div[class$="__small-title"] h5 { {{ module_font_styles.small_title_font.css }} } {% endif %}
+    .{{ name }}__folio div[class$='__form'] form {
+      {% if form_background_styles.background_type == "color" %}background-color: {{ form_background_styles.background_color.color }};{% endif %}
+      {% if form_background_styles.background_type == "gradient" %}background: {{ form_background_styles.background_gradient.css }};{% elif form_background_styles.background_type == "image" %} {{ form_background_styles.background_image.css }}; {% endif %}
+      {% if form_border_styles.border %}{{ form_border_styles.border.css }}{% endif %}
+      {% if form_border_styles.border_radius %}{{ borderRadius(form_border_styles.border_radius + "px") }}{% endif %}
+      {% if form_spacing_styles.spacing %}{{ form_spacing_styles.spacing.css }}{% endif %}
+      {% if form_alignment_styles.text_alignment %}{{ form_alignment_styles.text_alignment.css }}{% endif %}
+      {% if form_alignment_styles.alignment %}{{ form_alignment_styles.alignment.css }}{% endif %}
+    }
+    {% if module.featured_content.style_subscribe_horizontally %}
+      form[data-form-id="{{ module.featured_content.featured_form.form_id }}"] { display: flex; justify-content: space-between; align-items: center; position: relative; }
+      form[data-form-id="{{ module.featured_content.featured_form.form_id }}"] * { margin: 0 !important; }
+      form[data-form-id="{{ module.featured_content.featured_form.form_id }}"] > *:first-child { width: 35%; }
+      form[data-form-id="{{ module.featured_content.featured_form.form_id }}"] > .hs_email { width: 60%; margin: 0; }
+      form[data-form-id="{{ module.featured_content.featured_form.form_id }}"] > .hs_email label { display: none; }
+      form[data-form-id="{{ module.featured_content.featured_form.form_id }}"] > .hs_email input { padding: 2em 130px 2em .75em; }
+      form[data-form-id="{{ module.featured_content.featured_form.form_id }}"] > .hs_submit { position: absolute; display:flex !important; align-items: center; right: calc({{ form_spacing_styles.spacing.padding.right.value if form_spacing_styles.spacing.padding.right.value else 20 }}{{ form_spacing_styles.spacing.padding.right.units if form_spacing_styles.spacing.padding.right.units else "px" }} + 2em); width: auto; }
+      form[data-form-id="{{ module.featured_content.featured_form.form_id }}"] > .hs_submit .hs-button { padding: 1em; }
+    {% endif %}
+    {% if form_font_styles.heading_font %}.{{ name }}__folio div[class$='__form'] h1, .{{ name }}__folio div[class$='__form'] h2, .{{ name }}__folio div[class$='__form'] h3, .{{ name }}__folio div[class$='__form'] h4 { {{ form_font_styles.heading_font.css }} }{% endif %}
+    {% if form_font_styles.content_font %}.{{ name }}__folio div[class$='__form'] p, .{{ name }}__folio div[class$='__form'] li { {{ form_font_styles.content_font.css }} } {% endif %}
+    {% if form_font_styles.label_font %}.{{ name }}__folio div[class$='__form'] label { {{ form_font_styles.label_font.css }} }{% endif %}
+    {% if form_font_styles.input_font %}.{{ name }}__folio div[class$='__form'] input { {{ form_font_styles.input_font.css }} } {% endif %}
+    {% if module.featured_content.featured_content == "blocks" %}
+      .{{ name }}__folio *[class$='__block'] {
+        position: relative;
+        {% if block_background_styles.background_type == "color" %}background-color: {{ block_background_styles.background_color.color }};{% endif %}
+        {% if block_background_styles.background_type == "gradient" %}background: {{ block_background_styles.background_gradient.css }}{% else if block_background_styles.background_type == "image" %}{{ block_background_styles.background_image.css }}{% endif %}
+        {% if block_border_styles.border %}{{ block_border_styles.border.css }}{% endif %}
+        {% if block_border_styles.border_radius %}{{ borderRadius(block_border_styles.border_radius + "px") }} overflow:hidden;{% endif %}
+        {% if block_alignment_styles.text_alignment %}{{ block_alignment_styles.text_alignment.css|trim }};{% endif %}
+        {% if block_alignment_styles.alignment %}{{ block_alignment_styles.alignment.css }}{% endif %}
+      }
+      .{{ name }}__folio *[class$='__block'] .button, .{{ name }}__folio *[class$='__block'] .hs-button, .{{ name }}__folio *[class$='__block'] .cta_button {
+        padding: 12px 24px;
+      }
+      .{{ name }}__folio .blocks--media div[class$='__block-image'] { width: 100%; aspect-ratio: {{ module.style.block_styles.image_aspect_ratio if module.style.block_styles.image_aspect_ratio else "auto" }}; }
+      .{{ name }}__folio .blocks--hover *[class$='__block'] { aspect-ratio: {{ module.style.block_styles.image_aspect_ratio if module.style.block_styles.image_aspect_ratio else "auto" }}; }
+      .{{ name }}__folio .blocks--hover *[class$='__block'] > *:not(.folio__block-image) { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+      .{{ name }}__folio .blocks--hover div[class$='__block-image'] { aspect-ratio: {{ module.style.block_styles.image_aspect_ratio if module.style.block_styles.image_aspect_ratio else "auto" }}; }
+      .{{ name }}__folio .blocks--media.blocks--media--horizontal div[class$='__block-image'] { width: {{ module.style.block_styles.image_width }}%; }
+      {% if block_spacing_styles.spacing %}.{{ name }}__folio .folio__blocks.blocks--media div[class$='__block-wrap'], .{{ name }}__folio .folio__blocks.blocks--icon .folio__block { {{ block_spacing_styles.spacing.css }} }{% endif %}
+      {% if block_font_styles.heading_font %}.{{ name }}__folio div[class$='__block-title'], .{{ name }}__folio *[class$='__block'] h2, .{{ name }}__folio *[class$='__block'] h3, .{{ name }}__folio *[class$='__block'] h4 { {{ block_font_styles.heading_font.css }} } {% endif %}
+      {% if block_font_styles.content_font %}.{{ name }}__folio *[class$='__block'] p, .{{ name }}__folio *[class$='__block'] li { {{ block_font_styles.content_font.css }} } {% endif %}
+      {% if block_type != "icon" %}.{{ name }}__folio .folio__block-image { background-size: cover; background-position: center; }{% endif %}
+      .{{ name }}__folio div[class$="--vertical"].blocks--media .folio__block-image { width: 100%; }     
+      @media screen and (min-width:767px) {
+        .{{ name }}__folio .folio__blocks { 
+          {% if block_layout_type == "equal" %}align-items: stretch; {% endif %}
+          {% if block_alignment_styles.alignment.vertical_align == "MIDDLE" %}align-items: center;{% elif block_alignment_styles.alignment.vertical_align == "BOTTOM" %}align-items: flex-end;{% elif block_alignment_styles.alignment.vertical_align == "TOP" %}align-items: flex-start;{% endif %}   
+          {% if block_alignment_styles.alignment.horizontal_align == "CENTER" %}justify-content: center;{% elif block_alignment_styles.alignment.horizontal_align == "LEFT" %}justify-content: flex-start;{% else %}justify-content: flex-end;{% endif %} 
+        }
+        .{{ name }}__folio .folio__blocks.equal-height.fix-button .folio__block-wrap {
+          padding-bottom: calc({{ block_spacing_styles.spacing.padding.bottom.value if block_spacing_styles.spacing.padding.bottom else "20" }}px + 4em);
+        }
+        .{{ name }}__folio .folio__blocks.equal-height.fix-button .folio__block .button-wrap { 
+          position: absolute;
+          bottom: {{ block_spacing_styles.spacing.padding.bottom.value if block_spacing_styles.spacing.padding.bottom.value else "20" }}px;
+          left: {{ block_spacing_styles.spacing.padding.left.value if block_spacing_styles.spacing.padding.left.value else "20" }}px;
+          width: calc(100% - {{ block_spacing_styles.spacing.padding.left.value*2 if block_spacing_styles.spacing.padding.left.value else "40" }}px);
+        }
+        .{{ name }}__folio .folio__blocks.equal-height.fix-button .folio__block .button-wrap > * {
+          width: 100%;
+        }
+        {% if module.style.block_styles.alignment_options.alignment.vertical_align == "MIDDLE" %}
+          .{{ name }}__folio .folio__blocks > * { align-self: center; }
+          .{{ name }}__folio .folio__blocks .folio__block-wrap, .{{ name }}__folio *[class*="flip"] .folio__block-wrap > * { display: flex; flex-direction: column; justify-content: center; }
+        {% elif module.style.block_styles.alignment_options.alignment.vertical_align == "TOP" %}
+          .{{ name }}__folio .folio__blocks > * { align-self: flex-start; }
+          .{{ name }}__folio .folio__blocks .folio__block-wrap, .{{ name }}__folio *[class*="flip"] .folio__block-wrap > * { display: flex; flex-direction: column; justify-content: flex-end; }
+        {% elif module.style.block_styles.alignment_options.alignment.vertical_align == "BOTTOM" %}
+          .{{ name }}__folio .folio__blocks > * { align-self: flex-end; }
+          .{{ name }}__folio .folio__blocks .folio__block-wrap, .{{ name }}__folio *[class*="flip"] .folio__block-wrap > * { display: flex; flex-direction: column; justify-content: flex-start; }
+        {% endif %} 
+      }
+      {% macro flex_grid(col_num, vert_spacing, horiz_spacing) %}
+        {% set width =  1 / col_num * 100 %}
+        {% set row_two = col_num + 1 %}
+        {% set margin_adjust = horiz_spacing * ((col_num - 1) / col_num) %}
+          @media screen and (max-width: 786px) { .{{ name }}__folio .folio__blocks > *:not(:last-child) { margin-bottom: {{ vert_spacing }}px; } }
+          @media screen and (min-width: 787px) { 
+            .{{ name }}__folio .folio__blocks { display: flex; flex-wrap: wrap; }
+            .{{ name }}__folio .folio__blocks > * { display: inline-block; {% unless block_layout_styles.select_layout_style == "auto_width" %}width: calc({{ width }}% - {{ margin_adjust }}px);{% endunless %} margin-right: {{ horiz_spacing }}px !important; margin-bottom: 0; }
+            .{{ name }}__folio .folio__blocks > *:nth-child({{ col_num }}n) { margin-right: 0 !important; }
+            .{{ name }}__folio .folio__blocks > *:nth-child(1n+{{ row_two }}) { margin-top:  {{ vert_spacing }}px; }
+          }		
+      {% endmacro %}
+      {{ flex_grid(block_layout_styles.col_num, block_layout_styles.vertical_spacing, block_layout_styles.horizontal_spacing) }}
+    {% endif %}
+    {% if custom_primary_button == "true" %} 
+      .{{ name }}__folio a.button--primary {
+        {% if primary_button.style_options.button_spacing %}{{ primary_button.style_options.button_spacing.css }}{% endif %}
+        {% if primary_button.style_options.border_radius %}{{ borderRadius(primary_button.style_options.border_radius + "px") }}{% endif %}
+        {{ primary_button.default_colors.button_font.css }}
+        {{ primary_button.default_colors.button_border.css }}
+        background-color: {{ primary_button.default_colors.button_background_color.color }};
+      }
+      .{{ name }}__folio a.button--primary:hover {
+        {{ primary_button.hovered_colors.button_font.css }}
+        {{ primary_button.hovered_colors.button_border.css }}
+        background-color: {{ primary_button.hovered_colors.button_background_color.color }};
+      }
+    {% endif %} 
+    {% if custom_secondary_button == "true" %} 
+      .{{ name }}__folio a.button--secondary {
+        {% if secondary_button.style_options.button_spacing %}{{ secondary_button.style_options.button_spacing.css }}{% endif %}
+        {% if secondary_button.style_options.border_radius %}{{ borderRadius(secondary_button.style_options.border_radius + "px") }}{% endif %}
+        {{ secondary_button.default_colors.button_font.css }}
+        {{ secondary_button.default_colors.button_border.css }}
+        background-color: {{ secondary_button.default_colors.button_background_color.color }};
+      }
+      .{{ name }}__folio a.button--secondary:hover {
+        {{ secondary_button.hovered_colors.button_font.css }}
+        {{ secondary_button.hovered_colors.button_border.css }}
+        background-color: {{ secondary_button.hovered_colors.button_background_color.color }};
+      }
+    {% endif %}
+    {% if submit_button.custom_submit_button == "true" %}
+      .{{ name }}__folio form input[type='submit'] {
+        {% if submit_button.style_options.button_spacing %}{{ submit_button.style_options.button_spacing.css }}{% endif %}
+        {% if submit_button.style_options.border_radius %}{{ borderRadius(submit_button.style_options.border_radius + "px") }}{% endif %}
+        {{ submit_button.default_colors.button_font.css }}
+        {{ submit_button.default_colors.button_border.css }}
+        background-color: {{ submit_button.default_colors.button_background_color.color }} !important;
+      }
+      .{{ name }}__folio form input[type='submit']:hover {
+        {{ submit_button.hovered_colors.button_font.css }}
+        {{ submit_button.hovered_colors.button_border.css }}
+        background-color: {{ submit_button.hovered_colors.button_background_color.color }} !important;
+      }
+    {% endif %}
+    @media screen and (min-width: 768px) {
+      .{{ name }}__folio.section-layout--left div[class$='__row']:first-child > div:first-child, .{{ name }}__folio.section-layout--right div[class$='__row']:first-child > div:first-child { width: calc({{ layout_options.content_column_width }}% - {{ layout_options.content_gap/2|round }}px); {% if layout_options.content_column_width == 0 %}display:none;{% endif %} }
+      .{{ name }}__folio.section-layout--left div[class$='__row']:first-child > div:nth-child(2), .{{ name }}__folio.section-layout--right div[class$='__row']:first-child > div:nth-child(2) { width: calc({{ layout_options.featured_column_width }}% - {{ layout_options.content_gap/2|round }}px); {% if layout_options.featured_column_width == 0 %}display:none;{% endif %} }
+      
+      {% unless module.featured_content.featured_content == "none" %}
+        .{{ name }}__folio.section-layout--below div[class$='__row'] > div:first-child { margin-bottom: {{ layout_options.content_gap|round }}px; }
+        div[class$='__row'] { display: flex; flex-wrap: nowrap; width:100%; }
+        .section-layout--below div[class$='__row'] { flex-direction: column; }
+        .section-layout--above div[class$='__row'] { flex-direction: column-reverse; }
+        .section-layout--left div[class$='__row'] { flex-direction: row-reverse; }
+        .section-layout--right div[class$='__row'] { flex-direction: row; }
+        .{{ name }}__folio.section-layout--above div[class$='__row'] > div:first-child { margin-top: {{ layout_options.content_gap|round }}px; }
+        .{{ name }}__folio.section-layout--left div[class$='__row'] > div:first-child { margin-left: {{ layout_options.content_gap|round }}px; }
+        .{{ name }}__folio.section-layout--right div[class$='__row'] > div:first-child { margin-right: {{ layout_options.content_gap|round }}px; }
+      {% endunless %}
+    }
+    @media screen and (max-width: 767px) {
+      .{{ name }}__folio.section-layout--above div[class$='__row'] > div:first-child { margin-top: {{ layout_options.content_gap/2|round }}px; }
+      .{{ name }}__folio.section-layout--below div[class$='__row'] > div:first-child { margin-bottom: {{ layout_options.content_gap/2|round }}px; }
+      .{{ name }}__folio.section-layout--below.mobile-reverse div[class$='__row']:first-child > div:first-child { margin-bottom: {{ layout_options.content_gap/2|round if layout_options.content_gap != 0 else "30" }}px; }
+      .{{ name }}__folio.section-layout--above.mobile-reverse div[class$='__row']:first-child > div:first-child { margin-top: {{ layout_options.content_gap/2|round if layout_options.content_gap != 0 else "30" }}px; }
+      .{{ name }}__folio.section-layout--right div[class$='__row'] > div:first-child { margin-bottom: {{ layout_options.content_gap/2|round if layout_options.content_gap != 0 else "30" }}px; }
+      .{{ name }}__folio.section-layout--left div[class$='__row'] > div:first-child { margin-bottom: {{ layout_options.content_gap/2|round if layout_options.content_gap != 0 else "30" }}px; }
+      .{{ name }}__folio .blocks--hover--colorize { display: flex; flex-direction: column; }
+      .{{ name }}__folio .col--featured:not(.featured--blocks) { text-align: center; }
+    }
+    {% macro scale_text(min_fs, max_fs, min_vp, max_vp, object) %}
+      .{{ name }}__folio.scale-text {{ object }} { font-size: {{ min_fs }}px; }
+      @media screen and (min-width: {{ min_vp }}px) { .{{ name }}__folio.scale-text {{ object }} { font-size: calc({{ min_fs }}px + ({{ max_fs }} - {{ min_fs }}) * ((100vw - {{ min_vp }}px) / ({{ max_vp }} - {{ min_vp }}))); } }
+      @media screen and (min-width: {{ max_vp }}px) { .{{ name }}__folio.scale-text {{ object }} { font-size: {{ max_fs }}px; } }
+    {% endmacro %}
+    {{ scale_text(module_font_styles.scaled_header_options.minimum_font_size, module_font_styles.scaled_header_options.maximum_font_size, 320, 1600, module_font_styles.header_tag) }}
+    {% if module_background_styles.parallax == "css" %}
+      .{{ name }}__folio.section-parallax--css div[class$="__background"] { background-attachment: fixed; background-position: center center; }
+    {% endif %}
+    {% if module_alignment_styles.text_alignment %}.{{ name }}__folio div[class$='__cta'] { {% if module_alignment_styles.text_alignment.text_align == "CENTER" %}justify-content: center;{% endif %}{% if module_alignment_styles.text_alignment.text_align == "LEFT" %}justify-content: flex-start;{% endif %}{% if module_alignment_styles.text_alignment.text_align == "RIGHT" %}justify-content: flex-end;{% endif %} } {% endif %}
+    @media screen and (max-width: 767px) { .{{ name }} div:not(div[class$='__container']) { padding: 0 !important; } }
+    {% if module.featured_content.advanced_video_options.show_in_modal == "true"  %}.mfp-fade.mfp-bg { opacity: 0; {{ transition("all 0.15s ease-out") }} } .mfp-fade.mfp-bg.mfp-ready { opacity: 0.8; }.mfp-fade.mfp-bg.mfp-removing { opacity: 0; }.mfp-fade.mfp-wrap .mfp-content { opacity: 0; {{ transition("all 0.15s ease-out") }} }.mfp-fade.mfp-wrap.mfp-ready .mfp-content { opacity: 1; }.mfp-fade.mfp-wrap.mfp-removing .mfp-content { opacity: 0; }{% endif %}
+    {% if custom_primary_button == "true" || custom_secondary_button == "true" || custom_submit_button == "true"  %} 
+    {% macro style_button(button_option, button_style) %}
+      {% if button_style.split("_")|last == "outline" %}
+        .{{ name }}__folio .button.button--{{ button_option }},
+        .{{ name }}__folio .hs-button.button--{{ button_option }} {
+          background-color: transparent !important;
+          color: var(--button_{{ button_style.split("_")|first }}_border-color);
+          border-color: var(--button_{{ button_style.split("_")|first }}_border-color);
+        }
+        .{{ name }}__folio .button.button--{{ button_option }}:hover,
+        .{{ name }}__folio .hs-button.button--{{ button_option }}:hover {
+          color: var(--button_{{ button_style.split("_")|first }}-hover_color);
+          border-color: var(--button_{{ button_style.split("_")|first }}-hover_border-color);
+          background-color: var(--button_{{ button_style.split("_")|first }}-hover_background-color) !important;
+        }
+      {% else %}
+        .{{ name }}__folio .button.button--{{ button_option }},
+        .{{ name }}__folio .hs-button.button--{{ button_option }} {
+          color: var(--button_{{ button_style }}_color);
+          border-color: var(--button_{{ button_style }}_border-color);
+          background-color: var(--button_{{ button_style }}_background-color) !important;
+        }
+        .{{ name }}__folio .button.button--{{ button_option }}:hover,
+        .{{ name }}__folio .hs-button.button--{{ button_option }}:hover {
+          color: var(--button_{{ button_style }}-hover_color);
+          border-color: var(--button_{{ button_style }}-hover_border-color);
+          background-color: var(--button_{{ button_style }}-hover_background-color) !important;
+        }
+      {% endif %}
+    {% endmacro %}
+    {% macro style_button_obj(button_obj, button_style) %}
+      {% if button_style.split("_")|last == "outline" %}
+        {{ button_obj }} {
+          background-color: transparent !important;
+          color: var(--button_{{ button_style.split("_")|first }}_border-color);
+          border-color: var(--button_{{ button_style.split("_")|first }}_border-color);
+        }
+        {{ button_obj }}:hover {
+          color: var(--button_{{ button_style.split("_")|first }}-hover_color);
+          border-color: var(--button_{{ button_style.split("_")|first }}-hover_border-color);
+          background-color: var(--button_{{ button_style.split("_")|first }}-hover_background-color) !important;
+        }
+      {% else %}
+        {{ button_obj }} {
+          color: var(--button_{{ button_style }}_color);
+          border-color: var(--button_{{ button_style }}_border-color);
+          background-color: var(--button_{{ button_style }}_background-color) !important;
+        }
+        {{ button_obj }}:hover {
+          color: var(--button_{{ button_style }}-hover_color);
+          border-color: var(--button_{{ button_style }}-hover_border-color);
+          background-color: var(--button_{{ button_style }}-hover_background-color) !important;
+        }
+      {% endif %}
+    {% endmacro %}
+    {% if custom_primary_button == "true" && primary_button.button_preset != "custom" %}{{ style_button("primary", primary_button.button_preset) }}{% endif %}
+    {% if custom_secondary_button == "true" && secondary_button.button_preset != "custom" %}{{ style_button("secondary", secondary_button.button_preset) }}{% endif %}
+    {% if custom_submit_button == "true" && submit_button.button_preset != "custom" %}{{ style_button_obj("." + name + "__folio form input[type='submit']", submit_button.button_preset) }}{% endif %}
+    {% endif %}
+    @media screen and (min-width:768px) {
+      .{{ name }}__folio .col--featured { width: {{ layout_options.featured_column_width }}%; }
+      .{{ name }}__folio .col--content { width: {{ layout_options.content_column_width }}%;  }
+      .{{ name }}__folio .col--featured { width: {{ layout_options.featured_column_width }}%;  }
+    }
+    .{{ name }}__folio.block-shadow .folio__block {
+      {{ boxShadow("0px 10px 10px rgba(0,0,0,.3)") }}
+    }
+    
+    .overlay-blocks .folio__block:after {
+      {{ transition("all 1s ease-in-out") }}
+    }
+    
+    .hero h1, .gradient--h2 h2 {
+      {{ textShadow("10px 10px 15px rgba(0,0,0,.2)") }} 
+    }
+    </style>
+        
+{% end_require_css %}
+
+      
+{% endif %}
+        
+
+        
+        
+        
